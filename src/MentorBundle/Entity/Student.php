@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Student
  * @package MentorBundle\Entity
  * @ORM\Table("student")
+ * @ORM\Entity(repositoryClass="MentorBundle\Repository\StudentRepository")
  */
 class Student
 {

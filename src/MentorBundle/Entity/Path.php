@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Path
  * @package MentorBundle\Entity
  * @ORM\Table("path")
+ * @ORM\Entity(repositoryClass="MentorBundle\Repository\PathRepository")
  */
 class Path
 {

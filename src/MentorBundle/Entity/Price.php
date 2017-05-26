@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Price
  * @package MentorBundle\Entity
  * @ORM\Table("price")
+ * @ORM\Entity(repositoryClass="MentorBundle\Repository\PriceRepository")
  */
 class Price
 {

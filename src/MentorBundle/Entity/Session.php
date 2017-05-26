@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Session
  * @package MentorBundle\Entity
  * @ORM\Table("session")
+ * @ORM\Entity(repositoryClass="MentorBundle\Repository\SessionRepository")
  */
 class Session
 {
