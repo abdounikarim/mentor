@@ -1,10 +1,11 @@
 {
+    "description": "Mentor Project",
     "name": "casrime/mentor",
     "license": "proprietary",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "": "src/"
+            "MentorBundle\\": "src/"
         },
         "classmap": [
             "app/AppKernel.php",
