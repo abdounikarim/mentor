@@ -10,13 +10,19 @@ class LoadPathData implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $path = new Path();
-        $path->setName('Chef de projet développement');
+        $datas = [
+            'Chef de projet développement',
+            'Chef de projet design',
+            'Chef de projet marketing',
+            'Développeur web junior',
 
-        $path2 = new Path();
-        $path2->setName('Chef de projet design');
-
-        $path3 = new Path();
-        $path3->setName('Chef de projet marketing');
+        ];
+        foreach ($datas as $data)
+        {
+            $path = new Path();
+            $path->setName($data);
+            $manager->persist($path);
+        }
+        $manager->flush();
     }
 }

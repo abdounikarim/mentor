@@ -10,5 +10,6 @@ class LoadProjectData implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
+
     }
 }
