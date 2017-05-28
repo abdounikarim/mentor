@@ -13,10 +13,15 @@ class LoadPathData extends AbstractFixture implements FixtureInterface
     {
         $path = new Path();
         $path->setName('Chef de Projet Développement');
+        $path2 = new Path();
+        $path2->setName('Développeur web junior');
         $manager->persist($path);
+        $manager->persist($path2);
         $manager->flush();
 
+
         $this->addReference('path1', $path);
+        $this->addReference('path2', $path2);
     }
     public function getOrder()
     {

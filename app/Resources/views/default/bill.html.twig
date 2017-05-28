@@ -24,41 +24,78 @@
     </nav>
 
     <div class="container">
-
         <div class="starter-template">
             <h1>Facture</h1>
             <h2>{{ "now"|date('d/m/Y') }}</h2>
+
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
+                        <th>Date</th>
+                        <th>Mentoré</th>
+                        <th>Parcours</th>
+                        <th>Projet</th>
+                        <th>Tarif</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <th scope="row">1</th>
                         <td>Mark</td>
-                        <td>Otto</td>
+                        <td>
+                            <select class="path">
+                                <option>Choisir un projet</option>
+                                {% for path in paths %}
+                                    <option value="{{ path.id }}">{{ path.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <select class="project">
+
+                            </select>
+                        </td>
                         <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
     </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var defaultLink = "{{ absolute_url(path('ajax_project', {'project_id': 1})) }}";
+        $(document).ready(function(){
+            $.ajax({
+                url: defaultLink,
+                success: function (data) {
+                    $('.project option').remove();
+                    var table = data.data;
+                    var select = $('.project');
+                    table.forEach(function (project) {
+                        var option = '<option value="' + project.id + '">' + project.name + '</option>';
+                        select.append(option);
+                    });
+                }
+            });
+
+            $('.path').change(function () {
+                var link = "{{ absolute_url(path('ajax_project', {'project_id': "value" })) }}";
+                link = link.replace("value", $(this).val());
+                $.ajax({
+                    url: link,
+                    success: function (data) {
+                        $('.project option').remove();
+                        var table = data.data;
+                        var select = $('.project');
+                        table.forEach(function (project) {
+                            var option = '<option value="' + project.id + '">' + project.name + '</option>';
+                            select.append(option);
+                        });
+                    }
+                })
+            });
+        });
+    </script>
 {% endblock %}

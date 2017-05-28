@@ -20,14 +20,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/bill", name="bill")
-     */
-    public function billAction(Request $request)
-    {
-        return $this->render('default/bill.html.twig');
-    }
-
-    /**
      * @Route("/generator", name="generator")
      */
     public function generatorAction(Request $request)

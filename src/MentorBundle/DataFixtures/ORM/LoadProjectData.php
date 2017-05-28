@@ -16,7 +16,13 @@ class LoadProjectData extends AbstractFixture implements FixtureInterface
         $project->setPath($this->getReference('path1'));
         $project->setPrice($this->getReference('price1'));
 
+        $project2 = new Project();
+        $project2->setName("Intégrez la maquette du site d'une agence web");
+        $project2->setPath($this->getReference('path2'));
+        $project2->setPrice($this->getReference('price1'));
+
         $manager->persist($project);
+        $manager->persist($project2);
         $manager->flush();
     }
 
