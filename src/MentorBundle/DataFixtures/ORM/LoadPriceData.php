@@ -5,21 +5,23 @@ namespace MentorBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use MentorBundle\Entity\Path;
+use MentorBundle\Entity\Price;
 
-class LoadPathData extends AbstractFixture implements FixtureInterface
+class LoadPriceData extends AbstractFixture implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $path = new Path();
-        $path->setName('Chef de Projet Développement');
-        $manager->persist($path);
+        $price = new Price();
+        $price->setPrice(30);
+
+        $manager->persist($price);
         $manager->flush();
 
-        $this->addReference('path1', $path);
+        $this->addReference('price1', $price);
     }
+
     public function getOrder()
     {
-        return 1;
+        return 2;
     }
 }
