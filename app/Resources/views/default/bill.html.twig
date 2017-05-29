@@ -65,28 +65,14 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        var defaultLink = "{{ absolute_url(path('ajax_project', {'project_id': 1})) }}";
         $(document).ready(function(){
-            $.ajax({
-                url: defaultLink,
-                success: function (data) {
-                    console.log(data);
-                    $('.project option').remove();
-                    var table = data.data;
-                    var select = $('.project');
-                    table.forEach(function (project) {
-                        var option = '<option value="' + project.id + '">' + project.name + '</option>';
-                        select.append(option);
-                    });
-                }
-            });
-
             $('.path').change(function () {
                 var link = "{{ absolute_url(path('ajax_project', {'project_id': "value" })) }}";
                 link = link.replace("value", $(this).val());
                 $.ajax({
                     url: link,
                     success: function (data) {
+                        console.log(data);
                         $('.project option').remove();
                         var table = data.data;
                         var select = $('.project');
