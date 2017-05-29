@@ -51,6 +51,11 @@ class Session
     private $student;
 
     /**
+     * @ORM\ManyToOne(targetEntity="MentorBundle\Entity\Project")
+     */
+    private $project;
+
+    /**
      * @return int
      */
     public function getId()
@@ -129,6 +134,24 @@ class Session
     public function setStudent(Student $student)
     {
         $this->student = $student;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * @param Project $project
+     * @return $this
+     */
+    public function setProject(Project $project)
+    {
+        $this->project = $project;
         return $this;
     }
 }
