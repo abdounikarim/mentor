@@ -21,8 +21,15 @@ class LoadProjectData extends AbstractFixture implements FixtureInterface
         $project2->setPath($this->getReference('path2'));
         $project2->setPrice($this->getReference('price1'));
 
+        $project3 = new Project();
+        $project3->setName("Créez un thème WordPress");
+        $project3->setPath($this->getReference('path2'));
+        $project3->setPrice($this->getReference('price1'));
+
         $manager->persist($project);
         $manager->persist($project2);
+        $manager->persist($project3);
+
         $manager->flush();
     }
 

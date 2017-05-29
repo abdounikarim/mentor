@@ -35,7 +35,6 @@ class BillController extends Controller
             ];
         }
         $response = new JsonResponse();
-        dump($data);
         return $response->setData([
             'data' => $data,
         ]);
