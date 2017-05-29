@@ -70,6 +70,7 @@
             $.ajax({
                 url: defaultLink,
                 success: function (data) {
+                    console.log(data);
                     $('.project option').remove();
                     var table = data.data;
                     var select = $('.project');
