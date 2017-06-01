@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+
 {% block body %}
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -35,11 +40,28 @@
                         <th>Mentoré</th>
                         <th>Parcours</th>
                         <th>Projet</th>
+                        <th>Type</th>
+                        <th>No-show</th>
                         <th>Tarif</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
+                        {{ form_start(form) }}
+                        <td>{{ form_widget(form.date) }}</td>
+                        <td>{{ form_widget(form.student.firstname) }} {{ form_widget(form.student.name) }}</td>
+                        <td>{{ form_widget(form.student.path) }}</td>
+                        <td>{{ form_widget(form.project) }}</td>
+                        <td>{{ form_widget(form.type) }}</td>
+                        <td>{{ form_widget(form.noshow) }}</td>
+                        <td>{{ form_widget(form.price) }}</td>
+                        {{ form_end(form) }}
+                        <td><a data-toggle="tooltip" href="#" title="Ajouter la session">
+                                <i class="glyphicon glyphicon-plus"></i>
+                            </a><input type="submit"></td>
+                    </tr>
+                    <!--<tr>
                         <th scope="row">1</th>
                         <td>Mark</td>
                         <td>
@@ -56,7 +78,19 @@
                             </select>
                         </td>
                         <td>@mdo</td>
+                    </tr>-->
+                    {% for session in sessions %}
+                    <tr>
+                        <td>{{ session.date | date('d/m/Y') }}</td>
+                        <td>{{ session.student.firstname }} {{ session.student.name }}</td>
+                        <td>{{ session.student.path.name }}</td>
+                        <td>{{ session.project.name }}</td>
+                        <td>{{ session.type }}</td>
+                        <td>{% if session.noshow == true %}Oui{% else %}{{ session.noshow }}{% endif %}</td>
+                        <td>{{ session.price }}</td>
+                        <td></td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -64,25 +98,91 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
+    <script
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.2/i18n/jquery.ui.datepicker-fr.min.js"></script>
     <script>
+        var projects = [];
+        var selectedProject;
+
         $(document).ready(function(){
-            $('.path').change(function () {
-                var link = "{{ absolute_url(path('ajax_project', {'project_id': "value" })) }}";
-                link = link.replace("value", $(this).val());
+            $('#session_project').prop('disabled', true);
+
+            $('#session_date').datepicker({
+                format: "dd-mm-yyyy",
+                weekStart: 1,
+                startDate: new Date(),
+                language: "fr",
+                todayHighlight: true,
+            });
+
+            $('#session_student_name').change(function() {
+                var link = "{{ absolute_url(path('ajax_student', {'name': "name" })) }}";
+                link = link.replace("name", $(this).val());
                 $.ajax({
                     url: link,
                     success: function (data) {
                         console.log(data);
-                        $('.project option').remove();
-                        var table = data.data;
-                        var select = $('.project');
-                        table.forEach(function (project) {
-                            var option = '<option value="' + project.id + '">' + project.name + '</option>';
-                            select.append(option);
-                        });
+                        var path = data['data']['path'];
+                        var option = '#session_student_path option[value=' + path + ']';
+                        $(option).attr("selected","selected");
+                        getProjectsByPath($("#session_student_path").val());
+                    }
+                })
+
+            });
+
+            $('#session_student_path').change(function () {
+                getProjectsByPath($(this).val());
+                $('#session_project').prop('disabled', false);
+            });
+
+            $('#session_project').change(function () {
+                var project = parseInt($(this).val());
+                projects.forEach(function (key) {
+                    if (key.id === project) {
+                        selectedProject = key;
+                        getPrice();
                     }
                 })
             });
+
+            $('#session_noshow').on('click', function () {
+                getPrice();
+            });
         });
+
+        function getProjectsByPath(value) {
+            var link = "{{ absolute_url(path('ajax_project', {'project_id': "value" })) }}";
+            link = link.replace("value", value);
+            $.ajax({
+                url: link,
+                success: function (data) {
+                    console.log(data);
+                    $('#session_project option').remove();
+                    var table = data.data;
+                    var select = $('#session_project');
+                    var placeholder = '<option selected>Sélectionnez un projet</option>';
+                    select.prepend(placeholder);
+                    table.forEach(function (project) {
+                        projects.push(project);
+                        var option = '<option value="' + project.id + '">' + project.name + '</option>';
+                        select.append(option);
+                    });
+                }
+            })
+
+        }
+
+        function getPrice() {
+            if (($('#session_noshow').is(':checked'))) {
+                $('#session_price').val(selectedProject.price / 2);
+            } else {
+                $('#session_price').val(selectedProject.price);
+            }
+
+        }
     </script>
 {% endblock %}

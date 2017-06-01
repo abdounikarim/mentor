@@ -56,6 +56,12 @@ class Session
     private $project;
 
     /**
+     * @var float
+     * @ORM\Column(name="price", type="float")
+     */
+    private $price;
+
+    /**
      * @return int
      */
     public function getId()
@@ -152,6 +158,24 @@ class Session
     public function setProject(Project $project)
     {
         $this->project = $project;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param float $price
+     * @return Session
+     */
+    public function setPrice($price)
+    {
+        $this->price = (float) $price;
         return $this;
     }
 }

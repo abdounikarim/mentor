@@ -24,7 +24,8 @@ class StudentType extends AbstractType
             ->add('name', TextType::class)
             ->add('path', EntityType::class, array(
                 'class' => 'MentorBundle:Path',
-                'choice_label' => 'name'
+                'choice_label' => 'name',
+                'placeholder' => 'Sélectionnez un parcours'
             ));
     }
 }
