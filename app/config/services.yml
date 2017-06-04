@@ -4,6 +4,7 @@ parameters:
     #parameter_name: value
 
 services:
-    #service_name:
-    #    class: MentorBundle\Directory\ClassName
-    #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
+    mentor.form.form_authenticator:
+        class:      MentorBundle\Security\FormAuthenticator
+        arguments:  ["@security.password_encoder", "@router"]
+        autowire:   true
