@@ -4,6 +4,8 @@ parameters:
     #parameter_name: value
 
 services:
-    #service_name:
-    #    class: MentorBundle\Directory\ClassName
-    #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
+    mentor.form.form_session:
+        class: MentorBundle\Form\Type\SessionType
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: form.type}

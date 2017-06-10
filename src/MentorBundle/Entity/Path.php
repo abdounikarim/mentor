@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table("path")
  * @ORM\Entity(repositoryClass="MentorBundle\Repository\PathRepository")
  */
-class Path
+class Path implements \JsonSerializable
 {
     /**
      * @var int
@@ -97,5 +97,15 @@ class Path
     {
         $this->projects->removeElement($project);
         return $this;
+    }
+
+    function jsonSerialize()
+    {
+        return [
+            'path' => [
+                'id' => $this->id,
+                'name' => $this->name,
+            ]
+        ];
     }
 }

@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class BillController extends Controller
 {
@@ -17,18 +18,41 @@ class BillController extends Controller
      */
     public function billAction(Request $request)
     {
-        $session = new Session();
-        $form = $this->get('form.factory')->create(SessionType::class, $session);
-
         $em = $this->getDoctrine()->getManager();
         $paths = $em->getRepository('MentorBundle:Path')->findAll();
         $sessions = $em->getRepository('MentorBundle:Session')->findAll();
+
+        $session = new Session();
+        $form = $this->get('form.factory')->create(SessionType::class, $session);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($session);
+            $em->flush();
+
+            $this->addFlash('success', 'Session ajoutée');
+            return $this->redirectToRoute('bill');
+        }
 
         return $this->render('default/bill.html.twig', [
             'paths' => $paths,
             'sessions' => $sessions,
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/ajax/students", name="ajax_students")
+     */
+    public function ajaxStudentsAction(Request $request)
+    {
+        $term = trim(strip_tags($request->get('term')));
+
+        $em = $this->getDoctrine()->getManager();
+        $students = $em->getRepository('MentorBundle:Student')->findStudentsByTerm($term);
+
+        $response = new JsonResponse();
+        return $response->setData($students);
     }
 
     /**
@@ -50,20 +74,5 @@ class BillController extends Controller
             'data' => $data,
         ]);
 
-    }
-
-    /**
-     * @Route("/ajax/student/{name}", name="ajax_student")
-     */
-    public function ajaxStudentAction(Student $student)
-    {
-        $data = [
-            'path' => $student->getPath()->getId()
-        ];
-
-        $response = new JsonResponse();
-        return $response->setData(array(
-            'data' => $data
-        ));
     }
 }

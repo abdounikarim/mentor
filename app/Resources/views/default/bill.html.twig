@@ -3,6 +3,8 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/main.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -33,6 +35,12 @@
             <h1>Facture</h1>
             <h2>{{ "now"|date('d/m/Y') }}</h2>
 
+            {% for flash_message in app.session.flashBag.get('success') %}
+                <div class="alert alert-success alert-dismissible fade in">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {{ flash_message }}
+                </div>
+            {% endfor %}
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -49,36 +57,23 @@
                 <tbody>
                     <tr>
                         {{ form_start(form) }}
-                        <td>{{ form_widget(form.date) }}</td>
-                        <td>{{ form_widget(form.student.firstname) }} {{ form_widget(form.student.name) }}</td>
+                        <td>
+                            <div class="input-group date">
+                                {{ form_widget(form.date) }}<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </td>
+                        <td>{{ form_widget(form.student.id) }}{{ form_widget(form.student.fullname) }}</td>
                         <td>{{ form_widget(form.student.path) }}</td>
                         <td>{{ form_widget(form.project) }}</td>
                         <td>{{ form_widget(form.type) }}</td>
                         <td>{{ form_widget(form.noshow) }}</td>
                         <td>{{ form_widget(form.price) }}</td>
-                        {{ form_end(form) }}
                         <td><a data-toggle="tooltip" href="#" title="Ajouter la session">
                                 <i class="glyphicon glyphicon-plus"></i>
                             </a><input type="submit"></td>
+                        {{ form_end(form) }}
                     </tr>
-                    <!--<tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>
-                            <select class="path">
-                                <option>Choisir un projet</option>
-                                {% for path in paths %}
-                                    <option value="{{ path.id }}">{{ path.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                        <td>
-                            <select class="project">
 
-                            </select>
-                        </td>
-                        <td>@mdo</td>
-                    </tr>-->
                     {% for session in sessions %}
                     <tr>
                         <td>{{ session.date | date('d/m/Y') }}</td>
@@ -102,41 +97,91 @@
             src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
             integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
             crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.2/i18n/jquery.ui.datepicker-fr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/locales/bootstrap-datepicker.fr.min.js"></script>
     <script>
         var projects = [];
         var selectedProject;
 
         $(document).ready(function(){
-            $('#session_project').prop('disabled', true);
+            $('#session_project').attr("disabled", "disabled");
 
-            $('#session_date').datepicker({
-                format: "dd-mm-yyyy",
+            $('.input-group.date').datepicker({
+                format: "dd/mm/yyyy",
                 weekStart: 1,
-                startDate: new Date(),
+                maxViewMode: 2,
+                todayBtn: "linked",
                 language: "fr",
                 todayHighlight: true,
-            });
+                autoclose: true,
+                }
+            );
 
-            $('#session_student_name').change(function() {
-                var link = "{{ absolute_url(path('ajax_student', {'name': "name" })) }}";
-                link = link.replace("name", $(this).val());
-                $.ajax({
-                    url: link,
-                    success: function (data) {
-                        console.log(data);
-                        var path = data['data']['path'];
-                        var option = '#session_student_path option[value=' + path + ']';
+            /* Autocomplete student */
+            $.ui.autocomplete.prototype._renderItem = function( ul, item){
+                var term = this.term.split(' ').join('|');
+                var re = new RegExp("(" + term + ")", "gi") ;
+                var t = item.label.replace(re,"<b>$1</b>");
+                return $( "<li></li>" )
+                    .data( "item.autocomplete", item )
+                    .append( "<a>" + t + "</a>" )
+                    .appendTo( ul );
+            };
+            $('#session_student_fullname').autocomplete({
+                source: function(query, response) {
+                    var term = query.term;
+                    var link = "{{ absolute_url(path('ajax_students', {'term': "query" })) }}";
+                    link = link.replace("query", term);
+                    $.ajax({
+                        url: link,
+                        dataType: 'json',
+                        success: function (data) {
+                            if(data.length === 0) {
+                                var array = [
+                                    {
+                                        label: 'Add ' + term,
+                                        value: term,
+                                        path: null,
+                                    }
+                                ];
+                                response(array);
+                            } else {
+                                var array = data.error ? [] : $.map(data, function(object) {
+                                    var student = object.student;
+                                    console.log(student);
+                                    return {
+                                        label: student.firstname + " " + student.name,
+                                        value: student.id,
+                                        path: student.path.id
+                                    };
+                                });
+                                response(array);
+                            }
+                        }
+                    });
+                },
+                select: function(event, ui) {
+                    if ($.isNumeric(ui.item.value)) {
+                        $("#session_student_fullname").val(ui.item.label);
+                        $("#session_student_id").val(ui.item.value);
+                        var option = '#session_student_path option[value=' + ui.item.path + ']';
                         $(option).attr("selected","selected");
+                        $('#session_student_path').removeAttr('disabled');
                         getProjectsByPath($("#session_student_path").val());
+                    } else {
+                        $('#session_project').attr("disabled", "disabled");
+                        $("#session_student_fullname").val(ui.item.value);
+                        $("#session_student_id").val(null);
+                        $('#session_student_path').prop('selectedIndex', 0);
+                        $('#session_student_path').removeAttr('disabled');
                     }
-                })
-
+                    return false;
+                },
+                minLength: 2
             });
 
             $('#session_student_path').change(function () {
                 getProjectsByPath($(this).val());
-                $('#session_project').prop('disabled', false);
             });
 
             $('#session_project').change(function () {
@@ -153,6 +198,7 @@
                 getPrice();
             });
         });
+
 
         function getProjectsByPath(value) {
             var link = "{{ absolute_url(path('ajax_project', {'project_id': "value" })) }}";
@@ -171,6 +217,7 @@
                         var option = '<option value="' + project.id + '">' + project.name + '</option>';
                         select.append(option);
                     });
+                    $('#session_project').removeAttr('disabled');
                 }
             })
 
@@ -184,5 +231,6 @@
             }
 
         }
+
     </script>
 {% endblock %}
