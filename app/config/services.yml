@@ -9,3 +9,8 @@ services:
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
             - { name: form.type}
+
+    mentor.form.form_authenticator:
+        class:      MentorBundle\Security\FormAuthenticator
+        arguments:  ["@security.password_encoder", "@router"]
+        autowire:   true
