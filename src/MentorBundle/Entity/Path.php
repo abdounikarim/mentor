@@ -99,7 +99,7 @@ class Path implements \JsonSerializable
         return $this;
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return [
             'path' => [

@@ -8,27 +8,7 @@
 {% endblock %}
 
 {% block body %}
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{{ path('homepage') }}">Mentor</a>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="active"><a href="{{ path('homepage') }}">Dashboard</a></li>
-                    <li><a href="{{ path('bill') }}">Facture</a></li>
-                    <li><a href="{{ path('generator') }}">Générateur</a></li>
-                    <li><a href="{{ path('job') }}">Emploi</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
-        </div>
-    </nav>
+    {% include 'default/_navbar.html.twig' %}
 
     <div class="container">
         <div class="starter-template">
@@ -36,11 +16,12 @@
             <h2>{{ "now"|date('d/m/Y') }}</h2>
 
             {% for flash_message in app.session.flashBag.get('success') %}
-                <div class="alert alert-success alert-dismissible fade in">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    {{ flash_message }}
-                </div>
+            <div class="alert alert-success alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ flash_message }}
+            </div>
             {% endfor %}
+
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -56,24 +37,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        {{ form_start(form) }}
-                        <td>
-                            <div class="input-group date">
-                                {{ form_widget(form.date) }}<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
-                        </td>
-                        <td>{{ form_widget(form.student.id) }}{{ form_widget(form.student.fullname) }}</td>
-                        <td>{{ form_widget(form.student.path) }}</td>
-                        <td>{{ form_widget(form.project) }}</td>
-                        <td>{{ form_widget(form.type) }}</td>
-                        <td>{{ form_widget(form.noshow) }}</td>
-                        <td>{{ form_widget(form.price) }}</td>
-                        <td>
-                            <a data-toggle="tooltip" href="#" title="Ajouter la session">
-                                <i class="glyphicon glyphicon-plus"></i>
-                            </a>
-                            <input type="submit"></td>
-                        {{ form_end(form) }}
+                        {% include 'default/_session_form.html.twig' %}
                     </tr>
 
                     {% for session in sessions %}
@@ -101,6 +65,7 @@
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/locales/bootstrap-datepicker.fr.min.js"></script>
+    <script src="{{ asset('assets/js/bill.js') }}"></script>
     <script>
         var projects = [];
         var selectedProject;
@@ -108,18 +73,8 @@
         $(document).ready(function(){
             $('#session_project').attr("disabled", "disabled");
 
-            $('.input-group.date').datepicker({
-                format: "dd/mm/yyyy",
-                weekStart: 1,
-                maxViewMode: 2,
-                todayBtn: "linked",
-                language: "fr",
-                todayHighlight: true,
-                autoclose: true,
-                }
-            );
+            showDatePicker();
 
-            /* Autocomplete student */
             $.ui.autocomplete.prototype._renderItem = function( ul, item){
                 var term = this.term.split(' ').join('|');
                 var re = new RegExp("(" + term + ")", "gi") ;
@@ -150,7 +105,6 @@
                             } else {
                                 var array = data.error ? [] : $.map(data, function(object) {
                                     var student = object.student;
-                                    console.log(student);
                                     return {
                                         label: student.firstname + " " + student.name,
                                         value: student.id,
@@ -182,6 +136,7 @@
                 minLength: 2
             });
 
+
             $('#session_student_path').change(function () {
                 getProjectsByPath($(this).val());
             });
@@ -200,7 +155,6 @@
                 getPrice();
             });
         });
-
 
         function getProjectsByPath(value) {
             var link = "{{ absolute_url(path('ajax_project', {'project_id': "value" })) }}";
@@ -224,15 +178,5 @@
             })
 
         }
-
-        function getPrice() {
-            if (($('#session_noshow').is(':checked'))) {
-                $('#session_price').val(selectedProject.price / 2);
-            } else {
-                $('#session_price').val(selectedProject.price);
-            }
-
-        }
-
     </script>
 {% endblock %}

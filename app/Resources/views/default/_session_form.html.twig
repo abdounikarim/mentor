@@ -1,0 +1,19 @@
+{{ form_start(form) }}
+<td>
+    <div class="input-group date">
+        {{ form_widget(form.date) }}<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+    </div>
+</td>
+<td>{{ form_widget(form.student.id) }}{{ form_widget(form.student.fullname) }}</td>
+<td>{{ form_widget(form.student.path) }}</td>
+<td>{{ form_widget(form.project) }}</td>
+<td>{{ form_widget(form.type) }}</td>
+<td>{{ form_widget(form.noshow) }}</td>
+<td>{{ form_widget(form.price) }}</td>
+<td>
+    <a data-toggle="tooltip" href="#" title="Ajouter la session">
+        <i class="glyphicon glyphicon-plus"></i>
+    </a>
+    <input type="submit">
+</td>
+{{ form_end(form) }}
