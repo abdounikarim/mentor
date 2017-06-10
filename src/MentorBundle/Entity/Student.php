@@ -11,6 +11,7 @@ namespace MentorBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+// TODO revoir les contraintes d'unicité
 /**
  * Class Student
  * @package MentorBundle\Entity

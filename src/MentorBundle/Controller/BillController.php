@@ -24,6 +24,7 @@ class BillController extends Controller
         $form = $this->get('form.factory')->create(SessionType::class, $session);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            // TODO Demande de confirmation
             $em = $this->getDoctrine()->getManager();
             $em->persist($session);
             $em->flush();
