@@ -40,7 +40,7 @@ class FormAuthenticator extends AbstractGuardAuthenticator
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        return new RedirectResponse('login', $status = 401);
+        return new RedirectResponse('login', 401);
     }
 
     /**

@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include 'default/_navbar.html.twig' %}
+
+    <div class="container">
+        <div class="starter-template">
+            <h1>Facture</h1>
+            <h2>{{ "now"|date('d/m/Y') }}</h2>
+
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Désignation</th>
+                    <th>Quantité</th>
+                    <th>Unité</th>
+                    <th>P.U. HT</th>
+                    <th>Total HT</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

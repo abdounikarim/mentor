@@ -24,8 +24,10 @@ class DefaultController extends Controller
      */
     public function generatorAction(Request $request)
     {
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig');
+        $sessions = $this->getDoctrine()->getManager()->getRepository('MentorBundle:Session')->findByMonth('06');
+
+        dump($sessions);
+        return $this->render('default/generator.html.twig');
     }
 
     /**

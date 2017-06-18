@@ -31,6 +31,7 @@ class BillController extends Controller
 
             $this->addFlash('success', 'Session ajoutée');
             return $this->redirectToRoute('bill');
+
         }
 
         return $this->render('default/bill.html.twig', [

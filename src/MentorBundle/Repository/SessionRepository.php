@@ -13,5 +13,14 @@ use Doctrine\ORM\EntityRepository;
 
 class SessionRepository extends EntityRepository
 {
+    public function findByMonth($month)
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('s')
+            ->where('MONTH(s.date) = :month')
+                ->setParameter('month', $month)
+            ->getQuery();
 
+        return $query->getResult();
+    }
 }
