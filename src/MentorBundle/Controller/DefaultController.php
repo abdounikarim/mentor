@@ -22,12 +22,15 @@ class DefaultController extends Controller
     /**
      * @Route("/generator", name="generator")
      */
-    public function generatorAction(Request $request)
+    public function generatorAction()
     {
-        $sessions = $this->getDoctrine()->getManager()->getRepository('MentorBundle:Session')->findByMonth('06');
+        $result = $this->getDoctrine()->getManager()->getRepository('MentorBundle:Session')->countByMonth(06);
 
-        dump($sessions);
-        return $this->render('default/generator.html.twig');
+        $billingData = $this->get('mentor.total_amount_calculator')->calculate($result);
+
+        return $this->render('default/generator.html.twig', array(
+            'billingData' => $billingData
+        ));
     }
 
     /**

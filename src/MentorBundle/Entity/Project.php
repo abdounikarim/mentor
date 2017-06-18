@@ -33,10 +33,10 @@ class Project
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="MentorBundle\Entity\Price")
+     * @ORM\ManyToOne(targetEntity="MentorBundle\Entity\Level", inversedBy="projects")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $price;
+    private $level;
 
     /**
      * @ORM\ManyToOne(targetEntity="MentorBundle\Entity\Path", inversedBy="projects")
@@ -75,18 +75,18 @@ class Project
     /**
      * @return mixed
      */
-    public function getPrice()
+    public function getLevel()
     {
-        return $this->price;
+        return $this->level;
     }
 
     /**
-     * @param Price $price
+     * @param Level $level
      * @return Project
      */
-    public function setPrice(Price $price)
+    public function setLevel(Level $level)
     {
-        $this->price = $price;
+        $this->level = $level;
         return $this;
     }
 

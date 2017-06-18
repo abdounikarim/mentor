@@ -66,7 +66,7 @@ class BillController extends Controller
             $data[] = [
                 'id' => $project->getId(),
                 'name' => $project->getName(),
-                'price' => $project->getPrice()->getPrice()
+                'price' => $project->getLevel()->getPrice()->getPrice()
             ];
         }
         $response = new JsonResponse();

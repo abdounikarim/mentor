@@ -14,3 +14,6 @@ services:
         class:      MentorBundle\Security\FormAuthenticator
         arguments:  ["@security.password_encoder", "@router"]
         autowire:   true
+
+    mentor.total_amount_calculator:
+        class: MentorBundle\Services\TotalAmountCalculator
