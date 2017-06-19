@@ -1,3 +1,18 @@
+/* Loading */
+.loading {
+    display: none;
+}
+
+#projects, #student {
+    position: relative;
+}
+
+#project-loading, #student-loading {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
 /* Bouton ajout session */
 body > div.container > div > table > tbody > tr:nth-child(1) > td:nth-child(9) {
     position: relative;;
@@ -8,7 +23,7 @@ body > div.container > div > table > tbody > tr:nth-child(1) > td:nth-child(9) >
     padding-top: 10px;
 }
 
-body > div.container > div > table > tbody > tr:nth-child(1) > td:nth-child(9) > input[type="submit"] {
+input#add-session {
     position: absolute;
     opacity: 0;
 }

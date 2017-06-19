@@ -11,13 +11,16 @@ namespace MentorBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-// TODO revoir les contraintes d'unicité
 /**
  * Class Student
  * @package MentorBundle\Entity
  * @ORM\Table("student")
  * @ORM\Entity(repositoryClass="MentorBundle\Repository\StudentRepository")
- * @UniqueEntity(fields={"firstname", "name"})
+ * @UniqueEntity(
+ *     fields={"firstname", "name"},
+ *     errorPath="name",
+ *     message="Cet étudiant est déjà enregistré."
+ * )
  */
 class Student implements \JsonSerializable
 {

@@ -46,7 +46,7 @@ class GeneratorController extends Controller
         $result = $this->getDoctrine()->getManager()->getRepository('MentorBundle:Session')->countByMonth($month, $year);
 
         $billingData = $this->get('mentor.total_amount_calculator')->calculate($result);
-        dump($billingData);
+
         $response = new JsonResponse();
         return $response->setData($billingData);
     }

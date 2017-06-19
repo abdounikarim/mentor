@@ -1,12 +1,12 @@
-{{ form_start(form) }}
+{{ form_start(form, {'attr': {'id': 'session_form'}}) }}
 <td>
     <div class="input-group date">
         {{ form_widget(form.date) }}<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
     </div>
 </td>
-<td>{{ form_widget(form.student.id) }}{{ form_widget(form.student.fullname) }}</td>
+<td id="student">{{ form_widget(form.student.id) }}{{ form_widget(form.student.fullname) }}<span id="student-loading" class="loading"><img src="{{ asset('assets/img/small-spinner.gif') }}"></span></td>
 <td>{{ form_widget(form.student.path) }}</td>
-<td>{{ form_widget(form.project) }}</td>
+<td id="projects">{{ form_widget(form.project) }}<span id="project-loading" class="loading"><img src="{{ asset('assets/img/small-spinner.gif') }}"></span></td>
 <td>{{ form_widget(form.type) }}</td>
 <td>{{ form_widget(form.noshow) }}</td>
 <td>{{ form_widget(form.price) }}</td>
@@ -14,6 +14,6 @@
     <a data-toggle="tooltip" href="#" title="Ajouter la session">
         <i class="glyphicon glyphicon-plus"></i>
     </a>
-    <input type="submit">
+    <input type="button" name="btn" value="" id="add-session" data-toggle="modal" data-target="#confirm-session"/>
 </td>
 {{ form_end(form) }}

@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% include 'default/_navbar.html.twig' %}
-
     <div class="container">
         <div class="starter-template">
             <h1>Facture</h1>
@@ -22,6 +20,7 @@
                 </tr>
                 </thead>
             </table>
+            <div id="loading" class="loading"><img src="{{ asset('assets/img/spinner.gif') }}"></div>
         </div>
     </div>
 {% endblock %}
@@ -59,8 +58,10 @@
 
             $.ajax({
                 url: link,
+                beforeSend: function () {
+                  $('#loader').show();
+                },
                 success: function (data) {
-                    console.log(data);
                     var bill = $('#bill');
                     var rows = data.type;
                     var tableBody = '<tbody>';
@@ -93,6 +94,12 @@
                     bill.append(tableBody);
 
                     initBill = true;
+                },
+                error: function (error) {
+                    console.log(error);
+                },
+                complete: function () {
+                    $('#loading').hide();
                 }
             });
         }
