@@ -13,7 +13,11 @@ use Doctrine\ORM\EntityRepository;
 
 class SessionRepository extends EntityRepository
 {
-    public function countByMonth($month)
+    public function findAll(){
+        return $this->findBy([], array('date' => 'DESC'));
+    }
+
+    public function countByMonth($month, $year)
     {
         $query = $this->createQueryBuilder('s')
             ->addSelect('s.noshow')
@@ -26,6 +30,8 @@ class SessionRepository extends EntityRepository
             ->addSelect('COUNT(s)')
             ->where('MONTH(s.date) = :month')
                 ->setParameter('month', $month)
+            ->andWhere('YEAR(s.date) = :year')
+                ->setParameter('year', $year)
             ->groupBy('p.level, s.noshow')
             ->orderBy('p.level')
             ->getQuery();

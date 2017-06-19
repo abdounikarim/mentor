@@ -20,20 +20,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/generator", name="generator")
-     */
-    public function generatorAction()
-    {
-        $result = $this->getDoctrine()->getManager()->getRepository('MentorBundle:Session')->countByMonth(06);
-
-        $billingData = $this->get('mentor.total_amount_calculator')->calculate($result);
-
-        return $this->render('default/generator.html.twig', array(
-            'billingData' => $billingData
-        ));
-    }
-
-    /**
      * @Route("/job", name="job")
      */
     public function jobAction(Request $request)

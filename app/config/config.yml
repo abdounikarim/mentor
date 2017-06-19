@@ -67,6 +67,7 @@ doctrine:
         dql:
             datetime_functions:
                 month: MentorBundle\Extensions\Doctrine\Month
+                year: MentorBundle\Extensions\Doctrine\Year
 
 # Swiftmailer Configuration
 swiftmailer:
