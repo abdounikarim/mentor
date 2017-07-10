@@ -27,11 +27,12 @@ services:
     # Services
     mentor.total_amount_calculator:
         class: MentorBundle\Services\TotalAmountCalculator
+        arguments: ["@mentor.session_manager"]
 
     # Managers
     mentor.session_manager:
         class: MentorBundle\Manager\SessionManager
-        arguments: ["@doctrine.orm.entity_manager"]
+        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
 
     mentor.path_manager:
         class: MentorBundle\Manager\PathManager

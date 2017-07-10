@@ -43,7 +43,7 @@ class BillController extends Controller
         $sessionManager = $this->get('mentor.session_manager');
 
         $paths = $this->get('mentor.path_manager')->findAll();
-        $sessions = $sessionManager->findAll();
+        $sessions = $sessionManager->findAllByUser();
 
         $session = new Session();
         $form = $this->get('form.factory')->create(SessionType::class, $session);

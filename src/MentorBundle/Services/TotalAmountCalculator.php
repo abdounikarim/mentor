@@ -9,10 +9,25 @@
 namespace MentorBundle\Services;
 
 
+use MentorBundle\Manager\SessionManager;
+
 class TotalAmountCalculator
 {
-    public function calculate($data)
+    private $sessionManager;
+
+    public function __construct(SessionManager $sessionManager)
     {
+        $this->sessionManager = $sessionManager;
+    }
+
+    /**
+     * @param $request
+     * @return array
+     */
+    public function calculate($request)
+    {
+        $data = $this->sessionManager->getByMonth($request);
+
         $billingData = [
             'type' => [],
             'amount' => 0

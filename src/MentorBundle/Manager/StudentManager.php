@@ -31,8 +31,9 @@ class StudentManager extends Manager
         // TODO: Implement findOne() method.
     }
 
-    public function findByTerm($term)
+    public function findByTerm($request)
     {
+        $term = trim(strip_tags($request->get('term')));
         return $this->repository->findStudentsByTerm($term);
     }
 

@@ -17,7 +17,7 @@ class SessionRepository extends EntityRepository
         return $this->findBy([], array('date' => 'DESC'));
     }
 
-    public function countByMonth($month, $year)
+    public function getByMonth($month, $year, $user)
     {
         $query = $this->createQueryBuilder('s')
             ->addSelect('s.noshow')
@@ -32,6 +32,8 @@ class SessionRepository extends EntityRepository
                 ->setParameter('month', $month)
             ->andWhere('YEAR(s.date) = :year')
                 ->setParameter('year', $year)
+            ->andWhere('s.mentor = :mentor')
+                ->setParameter('mentor', $user)
             ->groupBy('p.level, s.noshow')
             ->orderBy('p.level')
             ->getQuery();

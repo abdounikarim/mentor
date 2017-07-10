@@ -28,7 +28,18 @@ class ProjectManager extends Manager
 
     public function findBy($search)
     {
-        return $this->repository->findBy($search);
+        $projects = $this->repository->findBy($search);
+
+        $data = [];
+        foreach ($projects as $project) {
+            $data[] = [
+                'id' => $project->getId(),
+                'name' => $project->getName(),
+                'price' => $project->getLevel()->getPrice()->getPrice()
+            ];
+        }
+
+        return $data;
     }
 
     public function save($formData)
