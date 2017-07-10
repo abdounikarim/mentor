@@ -9,6 +9,7 @@
 namespace MentorBundle\Entity;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,7 +21,6 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="MentorBundle\Repository\UserRepository")
  * @UniqueEntity(fields={"email"}, message="Email déjà utilisé")
- * @UniqueEntity(fields={"username"}, message="Pseudo déjà utilisé")
  * @UniqueEntity(fields={"firstname", "lastname"}, message="Compte déjà existant")
  */
 class User implements UserInterface, \Serializable
@@ -47,12 +47,6 @@ class User implements UserInterface, \Serializable
 
     /**
      * @var string
-     * @ORM\Column(name="username", type="string", unique=true)
-     */
-    private $username;
-
-    /**
-     * @var string
      * @ORM\Column(name="email", type="string", unique=true)
      */
     private $email;
@@ -64,10 +58,25 @@ class User implements UserInterface, \Serializable
     private $password;
 
     /**
+     * @var string
+     */
+    private $plainPassword;
+
+    /**
      * @var array
      * @ORM\Column(name="roles", type="array")
      */
     private $roles = array();
+
+    /**
+     * @ORM\OneToMany(targetEntity="MentorBundle\Entity\Session", mappedBy="mentor")
+     */
+    private $sessions;
+
+    public function __construct()
+    {
+        $this->sessions = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -100,17 +109,7 @@ class User implements UserInterface, \Serializable
      */
     public function getUsername()
     {
-        return $this->username;
-    }
-
-    /**
-     * @param string $username
-     * @return User
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-        return $this;
+        return $this->email;
     }
 
     /**
@@ -132,7 +131,8 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @return string
+     * @return User
+     * @internal param string $email
      */
     public function getEmail()
     {
@@ -172,7 +172,12 @@ class User implements UserInterface, \Serializable
      */
     public function getRoles()
     {
-        return $this->roles;
+        $roles = $this->roles;
+
+        if (!in_array('ROLE_USER', $roles)){
+            $roles[] = 'ROLE_USER';
+        }
+        return $roles;
     }
 
     /**
@@ -192,13 +197,14 @@ class User implements UserInterface, \Serializable
 
     public function eraseCredentials()
     {
+        $this->plainPassword = null;
     }
 
     public function serialize()
     {
         return serialize(array(
             $this->id,
-            $this->username,
+            $this->email,
             $this->password
         ));
     }
@@ -207,8 +213,53 @@ class User implements UserInterface, \Serializable
     {
         list(
             $this->id,
-            $this->username,
+            $this->email,
             $this->password
             ) = unserialize($serialized);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSessions()
+    {
+        return $this->sessions;
+    }
+
+    /**
+     * @param Session $session
+     * @return User
+     */
+    public function addSession(Session $session)
+    {
+        $this->sessions->add($session);
+        return $this;
+    }
+
+    /**
+     * @param Session $session
+     * @return User
+     */
+    public function removeSession(Session $session)
+    {
+        $this->sessions->removeElement($session);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string $plainPassword
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+        $this->password = null;
     }
 }

@@ -62,6 +62,11 @@ class Session
     private $price;
 
     /**
+     * @ORM\ManyToOne(targetEntity="MentorBundle\Entity\User", inversedBy="sessions")
+     */
+    private $mentor;
+
+    /**
      * @return int
      */
     public function getId()
@@ -176,6 +181,20 @@ class Session
     public function setPrice($price)
     {
         $this->price = (float) $price;
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getMentor()
+    {
+        return $this->mentor;
+    }
+
+    public function setMentor(User $user)
+    {
+        $this->mentor = $user;
         return $this;
     }
 }

@@ -9,8 +9,10 @@
 namespace MentorBundle\Controller;
 
 
+use MentorBundle\Form\Type\LoginType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 class SecurityController extends Controller
 {
@@ -23,9 +25,21 @@ class SecurityController extends Controller
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('default/login.html.twig', array(
-            'last_username' => $lastUsername,
+        $form = $this->createForm(LoginType::class, [
+            '_username' => $lastUsername
+        ]);
+
+        return $this->render('security/login.html.twig', array(
+            'form' => $form->createView(),
             'error' => $error
         ));
+    }
+
+    /**
+     * @Route("/logout", name="logout")
+     */
+    public function logoutAction()
+    {
+        throw new \Exception('this should not be reached!');
     }
 }

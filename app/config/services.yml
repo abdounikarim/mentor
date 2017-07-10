@@ -4,16 +4,43 @@ parameters:
     #parameter_name: value
 
 services:
+    # Forms
     mentor.form.form_session:
         class: MentorBundle\Form\Type\SessionType
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
             - { name: form.type}
 
-    mentor.form.form_authenticator:
+    # Security
+    mentor.security.form_authenticator:
         class:      MentorBundle\Security\FormAuthenticator
-        arguments:  ["@security.password_encoder", "@router"]
+        # arguments:  ["@security.password_encoder", "@router"]
         autowire:   true
 
+    # Events
+    mentor.doctrine.hash_password_listener:
+        class: MentorBundle\Doctrine\HashPasswordListener
+        autowire: true
+        tags:
+            - { name: doctrine.event_subscriber }
+
+    # Services
     mentor.total_amount_calculator:
         class: MentorBundle\Services\TotalAmountCalculator
+
+    # Managers
+    mentor.session_manager:
+        class: MentorBundle\Manager\SessionManager
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    mentor.path_manager:
+        class: MentorBundle\Manager\PathManager
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    mentor.project_manager:
+        class: MentorBundle\Manager\ProjectManager
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    mentor.student_manager:
+        class: MentorBundle\Manager\StudentManager
+        arguments: ["@doctrine.orm.entity_manager"]

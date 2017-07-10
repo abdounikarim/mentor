@@ -52,7 +52,7 @@
             if ($('tfoot').length !== 0) $('tfoot').remove();
             if ($('tbody').length !== 0) $('tbody').remove();
 
-            var link = "{{ absolute_url(path('ajax_generator', {'month': "selectedMonth", 'year': "selectedYear"})) }}";
+            var link = "{{ absolute_url(path('ajax_bill_generator', {'month': "selectedMonth", 'year': "selectedYear"})) }}";
 
             link = link.replace("selectedMonth", month).replace("selectedYear", year);
 

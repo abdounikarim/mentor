@@ -9,6 +9,9 @@
 namespace MentorBundle\Security;
 
 
+use Doctrine\ORM\EntityManager;
+use MentorBundle\Form\Type\LoginType;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -16,101 +19,143 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManager;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 
-class FormAuthenticator extends AbstractGuardAuthenticator
+class FormAuthenticator extends AbstractFormLoginAuthenticator
 {
-    private $failMessage = 'Bad credentials';
-    private $encoder;
+    private $formFactory;
+    private $em;
     private $router;
+    private $passwordEncoder;
+    private $csrfTokenManager;
 
-    public function __construct(UserPasswordEncoder $encoder, RouterInterface $router)
+    public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router, UserPasswordEncoder $passwordEncoder, CsrfTokenManagerInterface $csrfTokenManager)
     {
-        $this->encoder = $encoder;
+        $this->formFactory = $formFactory;
+        $this->em = $em;
         $this->router = $router;
+        $this->passwordEncoder = $passwordEncoder;
+        $this->csrfTokenManager = $csrfTokenManager;
     }
 
     /**
-     * @param Request $request
-     * @param AuthenticationException|null $authException
-     * @return RedirectResponse
+     * Return the URL to the login page.
+     *
+     * @return string
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    protected function getLoginUrl()
     {
-        return new RedirectResponse('login', 401);
+        return $this->router->generate('login');
     }
 
     /**
+     * Get the authentication credentials from the request and return them
+     * as any type (e.g. an associate array). If you return null, authentication
+     * will be skipped.
+     *
+     * Whatever value you return here will be passed to getUser() and checkCredentials()
+     *
+     * For example, for a form login, you might:
+     *
+     *      if ($request->request->has('_username')) {
+     *          return array(
+     *              'username' => $request->request->get('_username'),
+     *              'password' => $request->request->get('_password'),
+     *          );
+     *      } else {
+     *          return;
+     *      }
+     *
+     * Or for an API token that's on a header, you might use:
+     *
+     *      return array('api_key' => $request->headers->get('X-API-TOKEN'));
+     *
      * @param Request $request
-     * @return array|void
+     *
+     * @return mixed|null
      */
     public function getCredentials(Request $request)
     {
-        if ($request->request->has('_username')) {
-            return array(
-                'username' => $request->request->get('_username'),
-                'password' => $request->request->get('_password')
-            );
-        } else {
+        $isLoginSubmit = $request->getPathInfo() === '/login' && $request->isMethod('POST');
+
+        if(!$isLoginSubmit) {
             return;
         }
+
+        $csrfToken = $request->request->get('login')['_csrf_token'];
+        if (false === $this->csrfTokenManager->isTokenValid(new CsrfToken('authenticate', $csrfToken))) {
+            throw new InvalidCsrfTokenException('Invalid CSRF token.');
+        }
+
+        $form = $this->formFactory->create(LoginType::class);
+        $form->handleRequest($request);
+
+        $data = $form->getData();
+        $request->getSession()->set(Security::LAST_USERNAME, $data['_username']);
+
+        return $data;
     }
 
     /**
+     * Return a UserInterface object based on the credentials.
+     *
+     * The *credentials* are the return value from getCredentials()
+     *
+     * You may throw an AuthenticationException if you wish. If you return
+     * null, then a UsernameNotFoundException is thrown for you.
+     *
      * @param mixed $credentials
      * @param UserProviderInterface $userProvider
-     * @return UserInterface
+     *
+     * @throws AuthenticationException
+     *
+     * @return UserInterface|null
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $username = $credentials['username'];
-        return $userProvider->loadUserByUsername($username);
+        $username = $credentials['_username'];
+
+        return $this->em->getRepository('MentorBundle:User')
+            ->findOneBy(['email' => $username]);
     }
 
     /**
+     * Returns true if the credentials are valid.
+     *
+     * If any value other than true is returned, authentication will
+     * fail. You may also throw an AuthenticationException if you wish
+     * to cause authentication to fail.
+     *
+     * The *credentials* are the return value from getCredentials()
+     *
      * @param mixed $credentials
      * @param UserInterface $user
+     *
      * @return bool
+     *
      * @throws AuthenticationException
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        if ($this->encoder->isPasswordValid($user, $credentials['password'])) {
+        $password = $credentials['_password'];
+
+        if ($this->passwordEncoder->isPasswordValid($user, $password)) {
             return true;
         }
-        throw new CustomUserMessageAuthenticationException($this->failMessage);
+        return false;
     }
 
-    /**
-     * @param Request $request
-     * @param AuthenticationException $exception
-     * @return RedirectResponse
-     */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
-    {
-        $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
-        return new RedirectResponse($this->router->generate('login'));
-    }
-
-    /**
-     * @param Request $request
-     * @param TokenInterface $token
-     * @param string $providerKey
-     * @return RedirectResponse
-     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        return new RedirectResponse($this->router->generate('homepage'));
-    }
-
-    /**
-     * @return bool
-     */
-    public function supportsRememberMe()
-    {
-        return false;
+        $requestedURL = $request->getSession()->has('_security.main.target_path') ? $request->getSession()->get('_security.main.target_path') : $this->router->generate('homepage');
+        return new RedirectResponse($requestedURL);
     }
 }

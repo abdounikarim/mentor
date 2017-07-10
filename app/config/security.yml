@@ -7,7 +7,7 @@ security:
         mentor_db_provider:
             entity:
                 class:    MentorBundle\Entity\User
-                property: username
+                property: email
 
     encoders:
         MentorBundle\Entity\User:
@@ -25,14 +25,8 @@ security:
 
             guard:
                 authenticators:
-                    - mentor.form.form_authenticator
-                entry_point: mentor.form.form_authenticator
-
-            form_login:
-                login_path:           login
-                check_path:           login
-                csrf_token_generator: security.csrf.token_manager
-                provider:             mentor_db_provider
+                    - mentor.security.form_authenticator
+                # entry_point: mentor.form.form_authenticator
 
             logout:
                 path:   /logout
@@ -43,4 +37,8 @@ security:
         ROLE_SUPER_ADMIN:   [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     access_control:
+        - { path: ^/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, role: IS_AUTHENTICATED_FULLY }
         - { path: ^/admin, roles: ROLE_ADMIN }
