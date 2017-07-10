@@ -100,7 +100,9 @@ class User implements UserInterface, \Serializable
      */
     public function setFirstname($firstname)
     {
-        $this->firstname = $firstname;
+        if (is_string($firstname)) {
+            $this->firstname = ucfirst($firstname);
+        }
         return $this;
     }
 
@@ -126,13 +128,14 @@ class User implements UserInterface, \Serializable
      */
     public function setLastname($lastname)
     {
-        $this->lastname = $lastname;
+        if (is_string($lastname)) {
+            $this->lastname = strtoupper($lastname);
+        }
         return $this;
     }
 
     /**
-     * @return User
-     * @internal param string $email
+     * @return string
      */
     public function getEmail()
     {

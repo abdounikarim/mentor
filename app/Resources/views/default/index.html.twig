@@ -2,6 +2,12 @@
 
 {% block body %}
     <div class="container">
+        {% for flash_message in app.session.flashBag.get('success') %}
+            <div class="alert alert-success alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ flash_message }}
+            </div>
+        {% endfor %}
 
         <div class="starter-template">
             <h1>Mentorat</h1>

@@ -17,7 +17,7 @@ class StudentRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('s')
             ->select('s')
-            ->where('s.name LIKE :term')
+            ->where('s.lastname LIKE :term')
                 ->setParameter('term', '%'.$term.'%')
             ->orWhere('s.firstname LIKE :term')
                 ->setParameter('term', '%'.$term.'%')

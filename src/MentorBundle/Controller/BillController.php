@@ -30,7 +30,7 @@ class BillController extends Controller
             )
         )->getForm();
 
-        return $this->render('default/bill/bill.html.twig', array(
+        return $this->render('bill/bill.html.twig', array(
             'form' => $form->createView()
         ));
     }
@@ -57,7 +57,7 @@ class BillController extends Controller
             return $this->redirectToRoute('sessions');
         }
 
-        return $this->render('default/bill/sessions.html.twig', [
+        return $this->render('bill/sessions.html.twig', [
             'paths' => $paths,
             'sessions' => $sessions,
             'form' => $form->createView()

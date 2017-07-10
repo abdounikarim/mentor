@@ -41,7 +41,7 @@
                     {% for session in sessions %}
                     <tr>
                         <td>{{ session.date | date('d/m/Y') }}</td>
-                        <td>{{ session.student.firstname }} {{ session.student.name }}</td>
+                        <td>{{ session.student.firstname }} {{ session.student.lastname }}</td>
                         <td>{{ session.student.path.name }}</td>
                         <td>{{ session.project.name }}</td>
                         <td>{{ session.type }}</td>
@@ -109,7 +109,7 @@
                                 var array = data.error ? [] : $.map(data, function(object) {
                                     var student = object.student;
                                     return {
-                                        label: student.firstname + " " + student.name,
+                                        label: student.firstname + " " + student.lastname,
                                         value: student.id,
                                         path: student.path.id
                                     };

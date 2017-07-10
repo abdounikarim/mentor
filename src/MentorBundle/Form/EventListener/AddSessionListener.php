@@ -46,7 +46,7 @@ class AddSessionListener implements EventSubscriberInterface
         $newStudent = new Student();
         $newStudent
             ->setFirstname($elmts[0])
-            ->setName($elmts[1])
+            ->setLastname($elmts[1])
             ->setPath($this->em->getRepository('MentorBundle:Path')->find($student['path']));
 
         $this->em->persist($newStudent);

@@ -17,8 +17,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table("student")
  * @ORM\Entity(repositoryClass="MentorBundle\Repository\StudentRepository")
  * @UniqueEntity(
- *     fields={"firstname", "name"},
- *     errorPath="name",
+ *     fields={"firstname", "lastname"},
+ *     errorPath="lastname",
  *     message="Cet étudiant est déjà enregistré."
  * )
  */
@@ -34,9 +34,9 @@ class Student implements \JsonSerializable
 
     /**
      * @var string
-     * @ORM\Column(name="name", type="string")
+     * @ORM\Column(name="lastname", type="string")
      */
-    private $name;
+    private $lastname;
 
     /**
      * @var string
@@ -62,19 +62,19 @@ class Student implements \JsonSerializable
     /**
      * @return string
      */
-    public function getName()
+    public function getLastname()
     {
-        return $this->name;
+        return $this->lastname;
     }
 
     /**
-     * @param string $name
+     * @param string $lastname
      * @return Student
      */
-    public function setName($name)
+    public function setLastname($lastname)
     {
-        if (is_string($name)) {
-            $this->name = $name;
+        if (is_string($lastname)) {
+            $this->lastname = strtoupper($lastname);
         }
         return $this;
     }
@@ -94,7 +94,7 @@ class Student implements \JsonSerializable
     public function setFirstname($firstname)
     {
         if (is_string($firstname)) {
-            $this->firstname = $firstname;
+            $this->firstname = ucfirst($firstname);
         }
         return $this;
     }
@@ -130,7 +130,7 @@ class Student implements \JsonSerializable
             'student' => [
                 'id' => $this->id,
                 'firstname' => $this->firstname,
-                'name' => $this->name,
+                'lastname' => $this->lastname,
                 'path' => [
                     'id' => $this->getPath()->getId(),
                     'name' => $this->getPath()->getName()

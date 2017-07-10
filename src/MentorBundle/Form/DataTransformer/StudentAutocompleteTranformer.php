@@ -26,7 +26,7 @@ class StudentAutocompleteTranformer implements DataTransformerInterface
         if (null === $value) {
             return;
         }
-        return $value->getFirstname() . ' ' . $value->getName();
+        return $value->getFirstname() . ' ' . $value->getLastname();
     }
 
     public function reverseTransform($value)
