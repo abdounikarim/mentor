@@ -11,7 +11,7 @@
         {% endif %}
 
         {{ form_start(form) }}
-            {{ form_row(form._username) }}
+            {{ form_row(form._username, { 'label': 'Email' }) }}
             {{ form_row(form._password) }}
             {{ form_row(form._csrf_token) }}
             <button type="submit" class="btn">Login</button>

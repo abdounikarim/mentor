@@ -13,8 +13,10 @@ use Doctrine\ORM\EntityRepository;
 
 class StudentRepository extends EntityRepository
 {
-    public function findStudentsByTerm($term)
+    public function findStudentsByTerm($request)
     {
+        $term = trim(strip_tags($request->get('term')));
+
         $query = $this->createQueryBuilder('s')
             ->select('s')
             ->where('s.lastname LIKE :term')

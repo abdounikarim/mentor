@@ -3,10 +3,20 @@
     <div class="input-group date">
         {{ form_widget(form.date) }}<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
     </div>
+    {{ form_errors(form.date) }}
 </td>
-<td id="student">{{ form_widget(form.student.id) }}{{ form_widget(form.student.fullname) }}<span id="student-loading" class="loading"><img src="{{ asset('assets/img/small-spinner.gif') }}"></span></td>
-<td>{{ form_widget(form.student.path) }}</td>
-<td id="projects">{{ form_widget(form.project) }}<span id="project-loading" class="loading"><img src="{{ asset('assets/img/small-spinner.gif') }}"></span></td>
+<td id="student">
+    {{ form_widget(form.student.id) }}{{ form_widget(form.student.fullname) }}<span id="student-loading" class="loading"><img src="{{ asset('assets/img/small-spinner.gif') }}"></span>
+    {{ form_errors(form.student.fullname) }}
+</td>
+<td>
+    {{ form_widget(form.student.path) }}
+    {{ form_errors(form.student.path) }}
+</td>
+<td id="projects">
+    {{ form_widget(form.project) }}<span id="project-loading" class="loading"><img src="{{ asset('assets/img/small-spinner.gif') }}"></span>
+    {{ form_errors(form.project) }}
+</td>
 <td>{{ form_widget(form.type) }}</td>
 <td>{{ form_widget(form.noshow) }}</td>
 <td>{{ form_widget(form.price) }}</td>

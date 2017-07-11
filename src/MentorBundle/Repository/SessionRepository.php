@@ -10,6 +10,7 @@ namespace MentorBundle\Repository;
 
 
 use Doctrine\ORM\EntityRepository;
+use MentorBundle\Entity\User;
 
 class SessionRepository extends EntityRepository
 {
@@ -17,7 +18,12 @@ class SessionRepository extends EntityRepository
         return $this->findBy([], array('date' => 'DESC'));
     }
 
-    public function getByMonth($month, $year, $user)
+    public function findAllByUser(User $user)
+    {
+        return $this->findBy(['mentor' => $user], array('date' => 'DESC'));
+    }
+
+    public function getByMonth($month, $year, User $mentor)
     {
         $query = $this->createQueryBuilder('s')
             ->addSelect('s.noshow')
@@ -33,11 +39,17 @@ class SessionRepository extends EntityRepository
             ->andWhere('YEAR(s.date) = :year')
                 ->setParameter('year', $year)
             ->andWhere('s.mentor = :mentor')
-                ->setParameter('mentor', $user)
+                ->setParameter('mentor', $mentor)
             ->groupBy('p.level, s.noshow')
             ->orderBy('p.level')
             ->getQuery();
 
         return $query->getResult();
+    }
+
+    public function save($data)
+    {
+        $this->_em->persist($data);
+        $this->_em->flush();
     }
 }

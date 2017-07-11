@@ -12,6 +12,7 @@ namespace MentorBundle\Form\EventListener;
 use Doctrine\ORM\EntityManager;
 use MentorBundle\Entity\Student;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
@@ -40,6 +41,11 @@ class AddSessionListener implements EventSubscriberInterface
         $student = $data['student'];
 
         if ($this->em->getRepository('MentorBundle:Student')->find($student['id'])) return;
+
+        if (strlen($student['fullname']) === 0) {
+            $event->getForm()->addError(new FormError('Vous devez indiquer un étudiant.'));
+            return;
+        }
 
         $elmts = explode(" ", $student['fullname']);
 

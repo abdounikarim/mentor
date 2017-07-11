@@ -40,10 +40,10 @@ class BillController extends Controller
      */
     public function sessionsAction(Request $request)
     {
-        $sessionManager = $this->get('mentor.session_manager');
+        $sessionRepository = $this->get('mentor.session_repository');
 
-        $paths = $this->get('mentor.path_manager')->findAll();
-        $sessions = $sessionManager->findAllByUser();
+        $paths = $this->get('mentor.path_repository')->findAll();
+        $sessions = $sessionRepository->findAllByUser($this->getUser());
 
         $session = new Session();
         $form = $this->get('form.factory')->create(SessionType::class, $session);
@@ -51,7 +51,7 @@ class BillController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $session->setMentor($this->getUser());
-            $sessionManager->save($session);
+            $sessionRepository->save($session);
 
             $this->addFlash('success', 'Session ajoutée');
             return $this->redirectToRoute('sessions');

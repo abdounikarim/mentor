@@ -8,16 +8,18 @@
 
 namespace MentorBundle\Services;
 
-
-use MentorBundle\Manager\SessionManager;
+use MentorBundle\Repository\SessionRepository;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class TotalAmountCalculator
 {
-    private $sessionManager;
+    private $sessionRepository;
+    private $mentor;
 
-    public function __construct(SessionManager $sessionManager)
+    public function __construct(SessionRepository $sessionRepository, TokenStorage $tokenStorage)
     {
-        $this->sessionManager = $sessionManager;
+        $this->sessionRepository = $sessionRepository;
+        $this->mentor = $tokenStorage->getToken()->getUser();
     }
 
     /**
@@ -26,7 +28,10 @@ class TotalAmountCalculator
      */
     public function calculate($request)
     {
-        $data = $this->sessionManager->getByMonth($request);
+        $month = $request->get('month');
+        $year = $request->get('year');
+
+        $data = $this->sessionRepository->getByMonth($month, $year, $this->mentor);
 
         $billingData = [
             'type' => [],

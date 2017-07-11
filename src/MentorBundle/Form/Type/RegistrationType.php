@@ -17,17 +17,25 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('firstname', TextType::class)
-            ->add('lastname', TextType::class)
-            ->add('email', EmailType::class)
+            ->add('firstname', TextType::class, array(
+                'constraints' => new NotBlank()
+            ))
+            ->add('lastname', TextType::class, array(
+                'constraints' => new NotBlank()
+            ))
+            ->add('email', EmailType::class, array(
+                'constraints' => new NotBlank()
+            ))
             ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class
+                'type' => PasswordType::class,
+                'constraints' => new NotBlank()
             ]);
     }
 

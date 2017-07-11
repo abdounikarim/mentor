@@ -27,7 +27,7 @@ class AjaxBillController extends Controller
      */
     public function ajaxStudentsAction(Request $request)
     {
-        $students = $this->get('mentor.student_manager')->findByTerm($request);
+        $students = $this->get('mentor.student_repository')->findStudentsByTerm($request);
 
         $response = new JsonResponse();
         return $response->setData($students);
@@ -37,7 +37,7 @@ class AjaxBillController extends Controller
      * @Route("/project/{project_id}", name="ajax_project")
      */
     public function ajaxProjectAction($project_id){
-        $data = $this->get('mentor.project_manager')->findBy(['path' => $project_id]);
+        $data = $this->get('mentor.project_repository')->findByPath(['path' => $project_id]);
 
         $response = new JsonResponse();
         return $response->setData([

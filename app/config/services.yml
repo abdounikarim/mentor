@@ -1,7 +1,10 @@
 # Learn more about services, parameters and containers at
 # http://symfony.com/doc/current/service_container.html
 parameters:
-    #parameter_name: value
+    mentor.session_class: MentorBundle\Entity\Session
+    mentor.student_class: MentorBundle\Entity\Student
+    mentor.path_class:    MentorBundle\Entity\Path
+    mentor.project_class: MentorBundle\Entity\Project
 
 services:
     # Forms
@@ -14,7 +17,6 @@ services:
     # Security
     mentor.security.form_authenticator:
         class:      MentorBundle\Security\FormAuthenticator
-        # arguments:  ["@security.password_encoder", "@router"]
         autowire:   true
 
     # Events
@@ -27,21 +29,25 @@ services:
     # Services
     mentor.total_amount_calculator:
         class: MentorBundle\Services\TotalAmountCalculator
-        arguments: ["@mentor.session_manager"]
+        autowire: true
 
-    # Managers
-    mentor.session_manager:
-        class: MentorBundle\Manager\SessionManager
-        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+    # Repositories
+    mentor.session_repository:
+        class: MentorBundle\Repository\SessionRepository
+        factory: ['@doctrine.orm.entity_manager', 'getRepository']
+        arguments: ["%mentor.session_class%"]
 
-    mentor.path_manager:
-        class: MentorBundle\Manager\PathManager
-        arguments: ["@doctrine.orm.entity_manager"]
+    mentor.path_repository:
+        class: MentorBundle\Repository\PathRepository
+        factory: ['@doctrine.orm.entity_manager', 'getRepository']
+        arguments: ["%mentor.path_class%"]
 
-    mentor.project_manager:
-        class: MentorBundle\Manager\ProjectManager
-        arguments: ["@doctrine.orm.entity_manager"]
+    mentor.project_repository:
+        class: MentorBundle\Repository\ProjectRepository
+        factory: ['@doctrine.orm.entity_manager', 'getRepository']
+        arguments: ["%mentor.project_class%"]
 
-    mentor.student_manager:
-        class: MentorBundle\Manager\StudentManager
-        arguments: ["@doctrine.orm.entity_manager"]
+    mentor.student_repository:
+        class: MentorBundle\Repository\StudentRepository
+        factory: ['@doctrine.orm.entity_manager', 'getRepository']
+        arguments: ["%mentor.student_class%"]
