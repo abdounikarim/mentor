@@ -51,7 +51,8 @@ class AjaxBillController extends Controller
      */
     public function ajaxBillGeneratorAction(Request $request)
     {
-        $billingData = $this->get('mentor.total_amount_calculator')->calculate($request);
+        $billingData = $this->get('mentor.total_amount_calculator')
+            ->calculate($request->get('month'), $request->get('year'));
 
         $response = new JsonResponse();
         return $response->setData($billingData);
