@@ -11,17 +11,39 @@ class LoadPathData extends AbstractFixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $path = new Path();
-        $path->setName('Chef de Projet Développement');
-        $path2 = new Path();
-        $path2->setName('Développeur web junior');
-        $manager->persist($path);
-        $manager->persist($path2);
+        $cdpDes = new Path();
+        $cdpDes->setName('CDP Design');
+        $cdpDev = new Path();
+        $cdpDev->setName('CDP Développement');
+        $cdpMark = new Path();
+        $cdpMark->setName('CDP Marketing');
+        $dwj = new Path();
+        $dwj->setName('Développeur web junior');
+        $daf = new Path();
+        $daf->setName('DA FrontEnd');
+        $dasf = new Path();
+        $dasf->setName('DA PHP/Symfony');
+        $daj = new Path();
+        $daj->setName('DA Java');
+        $eii = new Path();
+        $eii->setName('Expert en ingénierie informatique');
+        $manager->persist($cdpDes);
+        $manager->persist($cdpDev);
+        $manager->persist($cdpMark);
+        $manager->persist($dwj);
+        $manager->persist($daf);
+        $manager->persist($dasf);
+        $manager->persist($daj);
+        $manager->persist($eii);
         $manager->flush();
-
-
-        $this->addReference('path1', $path);
-        $this->addReference('path2', $path2);
+        $this->addReference('cdpDes', $cdpDes);
+        $this->addReference('cdpDev', $cdpDev);
+        $this->addReference('cdpMark', $cdpMark);
+        $this->addReference('dwj', $dwj);
+        $this->addReference('daf', $daf);
+        $this->addReference('dasf', $dasf);
+        $this->addReference('daj', $daj);
+        $this->addReference('eii', $eii);
     }
     public function getOrder()
     {
