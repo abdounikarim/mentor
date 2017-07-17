@@ -31,6 +31,10 @@ services:
         class: MentorBundle\Services\TotalAmountCalculator
         autowire: true
 
+    mentor.export_excel:
+        class: MentorBundle\Services\ExportExcel
+        autowire: true
+
     # Repositories
     mentor.session_repository:
         class: MentorBundle\Repository\SessionRepository

@@ -6,7 +6,7 @@ function showDatePicker() {
             todayBtn: "linked",
             language: "fr",
             todayHighlight: true,
-            autoclose: true,
+            autoclose: true
         }
     );
 }

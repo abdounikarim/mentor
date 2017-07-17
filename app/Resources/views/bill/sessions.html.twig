@@ -177,7 +177,7 @@
         });
 
         function getProjectsByPath(value) {
-            var link = "{{ absolute_url(path('ajax_project', {'project_id': "value" })) }}";
+            var link = "{{ absolute_url(path('ajax_project', {'path_id': "value" })) }}";
             link = link.replace("value", value);
             $.ajax({
                 url: link,

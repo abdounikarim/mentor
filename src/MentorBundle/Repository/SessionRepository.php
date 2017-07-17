@@ -8,19 +8,21 @@
 
 namespace MentorBundle\Repository;
 
-
 use Doctrine\ORM\EntityRepository;
+use MentorBundle\Entity\Session;
 use MentorBundle\Entity\User;
 
 class SessionRepository extends EntityRepository
 {
+    use Crud;
+
     public function findAll(){
-        return $this->findBy([], array('date' => 'DESC'));
+        return $this->findBy([], ['date' => 'DESC']);
     }
 
     public function findAllByUser(User $user)
     {
-        return $this->findBy(['mentor' => $user], array('date' => 'DESC'));
+        return $this->findBy(['mentor' => $user], ['date' => 'DESC']);
     }
 
     public function getByMonth($month, $year, User $mentor)
@@ -41,15 +43,25 @@ class SessionRepository extends EntityRepository
             ->andWhere('s.mentor = :mentor')
                 ->setParameter('mentor', $mentor)
             ->groupBy('p.level, s.noshow')
-            ->orderBy('p.level')
+            ->orderBy('s.noshow')
             ->getQuery();
 
         return $query->getResult();
     }
 
-    public function save($data)
+    public function create(Session $session, User $user)
     {
-        $this->_em->persist($data);
-        $this->_em->flush();
+        $session->setMentor($user);
+        $this->save($session);
+    }
+
+    public function update()
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function delete()
+    {
+        // TODO: Implement delete() method.
     }
 }

@@ -22,7 +22,10 @@
             </table>
             <div id="loading" class="loading"><img src="{{ asset('assets/img/spinner.gif') }}"></div>
         </div>
+        <button type="button" class="btn-export" value="excel" id="export-excel">Export Excel</button>
+        <button type="button" class="btn-export" value="pdf" id="export-pdf" disabled >Export PDF</button>
     </div>
+
 {% endblock %}
 
 {% block javascripts %}
@@ -45,6 +48,14 @@
                 year = $('#form_date_year').val();
 
                 getBill(month, year);
+            });
+
+            $('.btn-export').click(function () {
+                var format = $(this).val(),
+                    month = $('#form_date_month').val(),
+                    year = $('#form_date_year').val();
+
+                getExport(format, month, year);
             });
         });
 
@@ -100,6 +111,21 @@
                 },
                 complete: function () {
                     $('#loading').hide();
+                }
+            });
+        }
+
+        function getExport(format, month, year) {
+            var link = "{{ absolute_url(path('ajax_export', {'format': "format", 'month': "month", 'year': "year"})) }}";
+            link = link.replace("format", format).replace("month", month).replace("year", year);
+
+            $.ajax({
+                url: link,
+                success: function (data) {
+                    window.location.replace(link);
+                },
+                error: function (error) {
+                    console.log(error);
                 }
             });
         }

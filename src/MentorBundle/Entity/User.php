@@ -47,6 +47,11 @@ class User implements UserInterface, \Serializable
 
     /**
      * @var string
+     */
+    private $fullname;
+
+    /**
+     * @var string
      * @ORM\Column(name="email", type="string", unique=true)
      */
     private $email;
@@ -264,5 +269,13 @@ class User implements UserInterface, \Serializable
     {
         $this->plainPassword = $plainPassword;
         $this->password = null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullname()
+    {
+        return $this->firstname . ' ' . $this->lastname;
     }
 }

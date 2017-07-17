@@ -6,8 +6,10 @@ use MentorBundle\Entity\Session;
 use MentorBundle\Form\Type\SessionType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class BillController
@@ -19,6 +21,8 @@ class BillController extends Controller
 {
     /**
      * @Route("/generator", name="bill_generator")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function billAction()
     {
@@ -37,6 +41,10 @@ class BillController extends Controller
 
     /**
      * @Route("/sessions", name="sessions")
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \LogicException
      */
     public function sessionsAction(Request $request)
     {
@@ -50,8 +58,7 @@ class BillController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $session->setMentor($this->getUser());
-            $sessionRepository->save($session);
+            $sessionRepository->create($session, $this->getUser());
 
             $this->addFlash('success', 'Session ajoutée');
             return $this->redirectToRoute('sessions');

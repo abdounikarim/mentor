@@ -18,6 +18,10 @@ class UserController extends Controller
 {
     /**
      * @Route("/register", name="register")
+     *
+     * @param Request $request
+     * @return null|\Symfony\Component\HttpFoundation\Response
+     * @throws \LogicException
      */
     public function registerAction(Request $request)
     {
