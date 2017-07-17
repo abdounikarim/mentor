@@ -9,7 +9,9 @@
 namespace MentorBundle\Services;
 
 
+use MentorBundle\Entity\User;
 use MentorBundle\Repository\SessionRepository;
+use Symfony\Component\HttpFoundation\Request;
 
 class ExportExcel
 {
@@ -24,7 +26,7 @@ class ExportExcel
         $this->excelObj = new \PHPExcel();
     }
 
-    public function exportToXLS($author, $request)
+    public function exportToXLS(User $author, Request $request)
     {
         $year = $request->get('year');
         $month = $request->get('month');
