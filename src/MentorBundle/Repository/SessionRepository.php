@@ -57,11 +57,9 @@ class SessionRepository extends EntityRepository
 
     public function update()
     {
-        // TODO: Implement update() method.
     }
 
     public function delete()
     {
-        // TODO: Implement delete() method.
     }
 }

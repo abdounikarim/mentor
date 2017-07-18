@@ -12,12 +12,14 @@ namespace MentorBundle\Controller;
 use MentorBundle\Form\Type\LoginType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
 
 class SecurityController extends Controller
 {
     /**
      * @Route("/login", name="login")
+     * @Method({"GET', "POST"})
      *
      * @return Response
      */
@@ -39,6 +41,8 @@ class SecurityController extends Controller
 
     /**
      * @Route("/logout", name="logout")
+     * @Method("GET")
+     *
      * @throws \Exception
      */
     public function logoutAction()

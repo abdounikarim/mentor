@@ -11,7 +11,6 @@ namespace MentorBundle\Services;
 
 use MentorBundle\Entity\User;
 use MentorBundle\Repository\SessionRepository;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class Export

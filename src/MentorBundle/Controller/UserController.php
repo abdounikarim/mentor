@@ -13,11 +13,13 @@ use MentorBundle\Form\Type\RegistrationType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class UserController extends Controller
 {
     /**
      * @Route("/register", name="register")
+     * @Method({"GET", "POST"})
      *
      * @param Request $request
      * @return null|\Symfony\Component\HttpFoundation\Response

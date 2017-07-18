@@ -48,11 +48,13 @@ class AddSessionListener implements EventSubscriberInterface
         }
 
         $elmts = explode(" ", $student['fullname']);
+        $firstname = $elmts[0];
+        $lastname = isset($elmts[2]) ? $elmts[1] . ' ' . $elmts[2] : $elmts[1];
 
         $newStudent = new Student();
         $newStudent
-            ->setFirstname($elmts[0])
-            ->setLastname($elmts[1])
+            ->setFirstname($firstname)
+            ->setLastname($lastname)
             ->setPath($this->em->getRepository('MentorBundle:Path')->find($student['path']));
 
         $this->em->persist($newStudent);

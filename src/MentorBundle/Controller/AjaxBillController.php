@@ -10,9 +10,9 @@ namespace MentorBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class AjaxBillController
@@ -24,6 +24,7 @@ class AjaxBillController extends Controller
 {
     /**
      * @Route("/students", name="ajax_students")
+     * @Method("GET")
      *
      * @param Request $request
      * @return JsonResponse
@@ -39,6 +40,7 @@ class AjaxBillController extends Controller
 
     /**
      * @Route("/project/{path_id}", name="ajax_project")
+     * @Method("GET")
      *
      * @param $path_id
      * @return JsonResponse
@@ -55,6 +57,7 @@ class AjaxBillController extends Controller
 
     /**
      * @Route("/bill-generator/{month}/{year}", name="ajax_bill_generator")
+     * @Method("GET")
      *
      * @param Request $request
      * @return JsonResponse
@@ -71,6 +74,8 @@ class AjaxBillController extends Controller
 
     /**
      * @Route("/export/{format}/{month}/{year}", name="ajax_export")
+     * @Method("GET")
+     *
      * @param Request $request
      * @return string
      * @throws \LogicException
@@ -104,7 +109,6 @@ class AjaxBillController extends Controller
 
             return $pdfObj->Output('mentorat.pdf', 'D');
         }
-
     }
 
 
