@@ -72,6 +72,7 @@ class AjaxBillController extends Controller
     /**
      * @Route("/export/{format}/{month}/{year}", name="ajax_export")
      * @param Request $request
+     * @return string
      * @throws \LogicException
      * @throws \PHPExcel_Reader_Exception
      * @throws \InvalidArgumentException
@@ -79,20 +80,31 @@ class AjaxBillController extends Controller
      */
     public function ajaxExportAction(Request $request)
     {
-        if ($request->get('format') === 'excel') {
-            $excelObj = $this->get('mentor.export_excel')->exportToXLS($this->getUser(), $request);
-            $objWriter = \PHPExcel_IOFactory::createWriter($excelObj, 'Excel5');
+        $period = [
+            'year' => $request->get('year'),
+            'month' => $request->get('month')
+        ];
 
-            $response = new Response();
-            $response->headers->set('Content-Type', 'application/vnd.ms-excel');
-            $response->headers->set('Content-Disposition', 'attachment;filename="mentorat.xls"');
-            $response->headers->set('Cache-Control', 'max-age=0');
+        if ($request->get('format') === 'excel') {
+            $exportExcel = $this->get('mentor.export_excel');
+            $objWriter = $exportExcel->exportToXLS($this->getUser(), $period);
+
+            $response = $exportExcel->prepareResponse('vnd.ms-excel', 'mentorat.xls');
             $response->prepare($request);
             $response->sendHeaders();
+
             return $objWriter->save('php://output');
         } elseif ($request->get('format') === 'pdf') {
-            return;
+            $exportPDF = $this->get('mentor.export_pdf');
+            $pdfObj = $exportPDF->exportToPDF($this->getUser(), $period);
+
+            $response = $exportPDF->prepareResponse(  'pdf', 'mentorat.pdf');
+            $response->prepare($request);
+            $response->sendHeaders();
+
+            return $pdfObj->Output('mentorat.pdf', 'D');
         }
+
     }
 
 

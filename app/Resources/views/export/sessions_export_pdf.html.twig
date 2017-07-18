@@ -1,0 +1,28 @@
+<h2>Détails des sessions</h2>
+<table cellpadding="1" cellspacing="1" border="1" style="text-align:center;">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Mentoré</th>
+        <th>Parcours</th>
+        <th>Projet</th>
+        <th>Type</th>
+        <th>No-show</th>
+        <th>Tarif</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for session in sessions %}
+        <tr>
+            <td>{{ session.date | date('d/m/Y') }}</td>
+            <td>{{ session.student.firstname }} {{ session.student.lastname }}</td>
+            <td>{{ session.student.path.name }}</td>
+            <td>{{ session.project.name }}</td>
+            <td>{{ session.type }}</td>
+            <td>{% if session.noshow == true %}Oui{% else %}{{ session.noshow }}{% endif %}</td>
+            <td>{{ session.price }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -35,6 +35,10 @@ services:
         class: MentorBundle\Services\ExportExcel
         autowire: true
 
+    mentor.export_pdf:
+        class: MentorBundle\Services\ExportPDF
+        autowire: true
+
     # Repositories
     mentor.session_repository:
         class: MentorBundle\Repository\SessionRepository

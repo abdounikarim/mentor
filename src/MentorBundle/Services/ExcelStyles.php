@@ -9,7 +9,7 @@
 namespace MentorBundle\Services;
 
 
-trait Excel
+trait ExcelStyles
 {
     private function defineSheetsTitles(array $titles)
     {

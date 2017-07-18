@@ -1,0 +1,32 @@
+<h2>Facturation</h2>
+<table cellpadding="1" cellspacing="1" border="1" style="text-align:center;">
+    <thead>
+        <tr>
+            <th>Désignation</th>
+            <th>Quantité</th>
+            <th>Unité</th>
+            <th>P.U. HT</th>
+            <th>Total HT</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% set total = 0 %}
+    {% for row in bill %}
+        {% set price = row.noshow == true ? row.price / 2 : row.price %}
+        {% set total = total + price * row.1 %}
+        <tr>
+            <td>{% if row.noshow == true %}No-show - {% endif %} Session niveau {{ row.name }}</td>
+            <td>{{ row.1 }}</td>
+            <td>session</td>
+            <td>{{ price }}</td>
+            <td>{{ price * row.1 }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="4" style="text-align: right;">Total</th>
+            <th>{{ total }}</th>
+        </tr>
+    </tfoot>
+</table>

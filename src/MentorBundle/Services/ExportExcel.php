@@ -13,30 +13,27 @@ use MentorBundle\Entity\User;
 use MentorBundle\Repository\SessionRepository;
 use Symfony\Component\HttpFoundation\Request;
 
-class ExportExcel
+class ExportExcel extends Export
 {
-    use Excel;
+    use ExcelStyles;
 
-    private $sessionRepository;
     private $excelObj;
 
     public function __construct(SessionRepository $sessionRepository)
     {
-        $this->sessionRepository = $sessionRepository;
+        parent::__construct($sessionRepository);
         $this->excelObj = new \PHPExcel();
     }
 
-    public function exportToXLS(User $author, Request $request)
+    public function exportToXLS(User $author, $period)
     {
-        $year = $request->get('year');
-        $month = $request->get('month');
-        $title = 'sessions-'. $month . $year;
-        $subject = 'Sessions de ' . $author->getFullname() . ' pour la période ' . $month . '/' . $year;
+        $this->setDocInfos($author, $period);
 
-        $this->excelObj->getProperties()->setCreator($author->getFullname())
-            ->setLastModifiedBy($author->getFullname())
-            ->setTitle($title)
-            ->setSubject($subject);
+        $this->excelObj->getProperties()
+            ->setCreator(self::CREATOR)
+            ->setLastModifiedBy($this->author)
+            ->setTitle($this->title)
+            ->setSubject($this->subject);
 
         $this->defineSheetsTitles(['Sessions', 'Facture']);
 
@@ -44,13 +41,13 @@ class ExportExcel
         $this->writeSessionsSheet($author);
 
         // Bill sheet
-        $this->writeBillSheet($month, $year, $author);
+        $this->writeBillSheet($this->month, $this->year, $author);
 
         $this->autosizeColumnsWidth();
 
         $this->excelObj->setActiveSheetIndex(0);
 
-        return $this->excelObj;
+        return \PHPExcel_IOFactory::createWriter($this->excelObj, 'Excel5');
     }
 
     private function writeSessionsSheet($author)
