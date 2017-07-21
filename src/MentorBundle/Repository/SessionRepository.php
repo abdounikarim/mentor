@@ -49,6 +49,22 @@ class SessionRepository extends EntityRepository
         return $query->getResult();
     }
 
+    public function findSessionsByUserAndPeriod($month, $year, User $mentor)
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('s')
+            ->where('MONTH(s.date) = :month')
+                ->setParameter('month', $month)
+            ->andWhere('YEAR(s.date) = :year')
+                ->setParameter('year', $year)
+            ->andWhere('s.mentor = :mentor')
+                ->setParameter('mentor', $mentor)
+            ->orderBy('s.date', 'DESC')
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
     public function create(Session $session, User $user)
     {
         $session->setMentor($user);

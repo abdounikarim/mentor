@@ -59,3 +59,7 @@ services:
         class: MentorBundle\Repository\StudentRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ["%mentor.student_class%"]
+
+    # Variables JS
+    mentor.js_vars:
+        class: stdClass

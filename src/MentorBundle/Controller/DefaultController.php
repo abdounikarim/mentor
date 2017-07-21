@@ -21,6 +21,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/job", name="job")
+     * @Method("GET")
      */
     public function jobAction(Request $request)
     {

@@ -59,7 +59,7 @@ class ExportPDF extends Export
 
         $pdf->AddPage();
 
-        $sessions = $this->sessionRepository->findAllByUser($user);
+        $sessions = $this->sessionRepository->findSessionsByUserAndPeriod($this->month, $this->year, $user);
         $html = $this->twig->render(
             'export/sessions_export_pdf.html.twig', [
                 'sessions' => $sessions

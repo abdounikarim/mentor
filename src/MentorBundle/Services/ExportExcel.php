@@ -37,7 +37,7 @@ class ExportExcel extends Export
         $this->defineSheetsTitles(['Sessions', 'Facture']);
 
         // Sessions sheet
-        $this->writeSessionsSheet($author);
+        $this->writeSessionsSheet($this->month, $this->year, $author);
 
         // Bill sheet
         $this->writeBillSheet($this->month, $this->year, $author);
@@ -49,9 +49,9 @@ class ExportExcel extends Export
         return \PHPExcel_IOFactory::createWriter($this->excelObj, 'Excel5');
     }
 
-    private function writeSessionsSheet($author)
+    private function writeSessionsSheet($month, $year, $author)
     {
-        $sessionsData = $this->sessionRepository->findAllByUser($author);
+        $sessionsData = $this->sessionRepository->findSessionsByUserAndPeriod($month, $year, $author);
 
         $sessionsSheet = $this->excelObj->setActiveSheetIndexByName('Sessions');
         $sessionsSheet
