@@ -4,6 +4,7 @@ namespace MentorBundle\Controller;
 
 use MentorBundle\Entity\Session;
 use MentorBundle\Form\Type\SessionType;
+use MentorBundle\Repository\SessionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,19 +40,29 @@ class BillController extends Controller
     }
 
     /**
-     * @Route("/sessions", name="sessions")
+     * @Route("/sessions/{page}", name="sessions", requirements={"page": "\d+"})
      * @Method({"GET", "POST"})
      *
      * @param Request $request
+     * @param int $page
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
      */
-    public function sessionsAction(Request $request)
+    public function sessionsAction(Request $request, $page = 1)
     {
         $sessionRepository = $this->get('mentor.session_repository');
 
         $paths = $this->get('mentor.path_repository')->findAll();
-        $sessions = $sessionRepository->findAllByUser($this->getUser());
+
+        $sessions = $sessionRepository->findAllByUser($this->getUser(), $page);
+        $sessionsCount = $sessionRepository->countByUser($this->getUser());
+
+        $pagination = [
+            'page' => $page,
+            'route' => 'sessions',
+            'pages_count' => ceil($sessionsCount / SessionRepository::SESSIONS_PER_PAGE),
+            'route_params' => array()
+        ];
 
         $session = new Session();
         $form = $this->get('form.factory')->create(SessionType::class, $session);
@@ -67,6 +78,7 @@ class BillController extends Controller
         return $this->render('bill/sessions.html.twig', [
             'paths' => $paths,
             'sessions' => $sessions,
+            'pagination' => $pagination,
             'form' => $form->createView()
         ]);
     }
