@@ -28,7 +28,7 @@ class TotalAmountCalculator
      */
     public function calculate($month, $year)
     {
-        $data = $this->sessionRepository->getByMonth($month, $year, $this->mentor);
+        $data = $this->sessionRepository->getBillDataByUserAndPeriod($month, $year, $this->mentor);
 
         $billingData = [
             'type' => [],

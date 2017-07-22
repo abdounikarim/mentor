@@ -51,7 +51,7 @@ class ExportExcel extends Export
 
     private function writeSessionsSheet($month, $year, $author)
     {
-        $sessionsData = $this->sessionRepository->findSessionsByUserAndPeriod($month, $year, $author);
+        $sessionsData = $this->sessionRepository->findAllByUserAndPeriod($month, $year, $author);
 
         $sessionsSheet = $this->excelObj->setActiveSheetIndexByName('Sessions');
         $sessionsSheet
@@ -86,7 +86,7 @@ class ExportExcel extends Export
 
     private function writeBillSheet($month, $year, $author)
     {
-        $billData = $this->sessionRepository->getByMonth($month, $year, $author);
+        $billData = $this->sessionRepository->getBillDataByUserAndPeriod($month, $year, $author);
 
         $billSheet = $this->excelObj->setActiveSheetIndexByName('Facture');
         $billSheet

@@ -16,6 +16,8 @@ class SessionRepository extends EntityRepository
 {
     use Crud;
 
+    private $query;
+
     public function findAll(){
         return $this->findBy([], ['date' => 'DESC']);
     }
@@ -25,9 +27,9 @@ class SessionRepository extends EntityRepository
         return $this->findBy(['mentor' => $user], ['date' => 'DESC']);
     }
 
-    public function getByMonth($month, $year, User $mentor)
+    public function getBillDataByUserAndPeriod($month, $year, User $mentor)
     {
-        $query = $this->createQueryBuilder('s')
+        $this->query = $this->createQueryBuilder('s')
             ->addSelect('s.noshow')
             ->innerJoin('s.project', 'p')
                 ->addSelect('p')
@@ -35,34 +37,29 @@ class SessionRepository extends EntityRepository
                 ->addSelect('l.name')
             ->innerJoin('l.price', 'pri')
                 ->addSelect('pri.price')
-            ->addSelect('COUNT(s)')
-            ->where('MONTH(s.date) = :month')
-                ->setParameter('month', $month)
-            ->andWhere('YEAR(s.date) = :year')
-                ->setParameter('year', $year)
-            ->andWhere('s.mentor = :mentor')
-                ->setParameter('mentor', $mentor)
-            ->groupBy('p.level, s.noshow')
-            ->orderBy('s.noshow')
-            ->getQuery();
+            ->addSelect('COUNT(s)');
 
-        return $query->getResult();
+        $this->getByPeriod($month, $year);
+        $this->getByUser($mentor);
+
+        $this->query
+            ->groupBy('p.level, s.noshow')
+            ->orderBy('s.noshow');
+
+        return $this->query->getQuery()->getResult();
     }
 
-    public function findSessionsByUserAndPeriod($month, $year, User $mentor)
+    public function findAllByUserAndPeriod($month, $year, User $mentor)
     {
-        $query = $this->createQueryBuilder('s')
-            ->select('s')
-            ->where('MONTH(s.date) = :month')
-                ->setParameter('month', $month)
-            ->andWhere('YEAR(s.date) = :year')
-                ->setParameter('year', $year)
-            ->andWhere('s.mentor = :mentor')
-                ->setParameter('mentor', $mentor)
-            ->orderBy('s.date', 'DESC')
-            ->getQuery();
+        $this->query = $this->createQueryBuilder('s')
+            ->select('s');
 
-        return $query->getResult();
+        $this->getByUser($mentor);
+        $this->getByPeriod($month, $year);
+
+        $this->query->orderBy('s.date', 'DESC');
+
+        return $this->query->getQuery()->getResult();
     }
 
     public function create(Session $session, User $user)
@@ -75,7 +72,19 @@ class SessionRepository extends EntityRepository
     {
     }
 
-    public function delete()
+    private function getByPeriod($month, $year)
     {
+        return $this->query
+            ->andwhere('MONTH(s.date) = :month')
+                ->setParameter('month', $month)
+            ->andWhere('YEAR(s.date) = :year')
+                ->setParameter('year', $year);
+    }
+
+    private function getByUser(User $mentor)
+    {
+        return $this->query
+            ->andWhere('s.mentor = :mentor')
+                ->setParameter('mentor', $mentor);
     }
 }

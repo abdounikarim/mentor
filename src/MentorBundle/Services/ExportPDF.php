@@ -47,7 +47,7 @@ class ExportPDF extends Export
 
         $pdf->AddPage();
 
-        $bill = $this->sessionRepository->getByMonth($this->month, $this->year, $user);
+        $bill = $this->sessionRepository->getBillDataByUserAndPeriod($this->month, $this->year, $user);
 
         $html = $this->twig->render(
             'export/bill_export_pdf.html.twig', [
@@ -59,7 +59,7 @@ class ExportPDF extends Export
 
         $pdf->AddPage();
 
-        $sessions = $this->sessionRepository->findSessionsByUserAndPeriod($this->month, $this->year, $user);
+        $sessions = $this->sessionRepository->findAllByUserAndPeriod($this->month, $this->year, $user);
         $html = $this->twig->render(
             'export/sessions_export_pdf.html.twig', [
                 'sessions' => $sessions
