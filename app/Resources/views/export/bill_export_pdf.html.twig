@@ -18,15 +18,15 @@
             <td>{% if row.noshow == true %}No-show - {% endif %} Session niveau {{ row.name }}</td>
             <td>{{ row.1 }}</td>
             <td>session</td>
-            <td>{{ price }}</td>
-            <td>{{ price * row.1 }}</td>
+            <td>{{ price|localizedcurrency('EUR') }}</td>
+            <td>{{ (price * row.1)|localizedcurrency('EUR') }}</td>
         </tr>
     {% endfor %}
     </tbody>
     <tfoot>
         <tr>
             <th colspan="4" style="text-align: right;">Total</th>
-            <th>{{ total }}</th>
+            <th>{{ total|localizedcurrency('EUR') }}</th>
         </tr>
     </tfoot>
 </table>
