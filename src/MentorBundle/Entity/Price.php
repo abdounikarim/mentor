@@ -28,7 +28,7 @@ class Price
 
     /**
      * @var float
-     * @ORM\Column(name="price", type="float", scale=2)
+     * @ORM\Column(name="price", type="float")
      */
     private $price;
 

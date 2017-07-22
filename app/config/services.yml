@@ -63,3 +63,9 @@ services:
         class: MentorBundle\Repository\StudentRepository
         factory: ['@doctrine.orm.entity_manager', 'getRepository']
         arguments: ["%mentor.student_class%"]
+
+    # Twig extensions
+    twig.extension.intl:
+        class: Twig_Extensions_Extension_Intl
+        tags:
+            - { name: twig.extension }

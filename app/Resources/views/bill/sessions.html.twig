@@ -11,7 +11,7 @@
     <div class="container">
         <div class="starter-template">
             <h1>Facture</h1>
-            <h2>{{ "now"|date('d/m/Y') }}</h2>
+            <h2>{{ "now"|localizeddate('short', 'none') }}</h2>
 
             {% for flash_message in app.session.flashBag.get('success') %}
             <div class="alert alert-success alert-dismissible fade in">
@@ -40,13 +40,13 @@
 
                     {% for session in sessions %}
                     <tr>
-                        <td>{{ session.date | date('d/m/Y') }}</td>
+                        <td>{{ session.date|localizeddate('short', 'none') }}</td>
                         <td>{{ session.student.firstname }} {{ session.student.lastname }}</td>
                         <td>{{ session.student.path.name }}</td>
                         <td>{{ session.project.name }}</td>
                         <td>{{ session.type }}</td>
                         <td>{% if session.noshow == true %}Oui{% else %}{{ session.noshow }}{% endif %}</td>
-                        <td>{{ session.price }}</td>
+                        <td>{{ session.price|localizedcurrency('EUR') }}</td>
                         <td></td>
                     </tr>
                     {% endfor %}

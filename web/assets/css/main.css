@@ -1,3 +1,15 @@
+/* Pagination */
+.pagination-buttons > a {
+    color: black;
+}
+
+.pagination-buttons > a.current-page {
+    padding: 5px;
+    border-radius: 4px;
+    background-color: black;
+    color: white;
+}
+
 /* Loading */
 .loading {
     display: none;
