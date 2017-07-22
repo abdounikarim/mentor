@@ -57,12 +57,7 @@ class BillController extends Controller
         $sessions = $sessionRepository->findAllByUser($this->getUser(), $page);
         $sessionsCount = $sessionRepository->countByUser($this->getUser());
 
-        $pagination = [
-            'page' => $page,
-            'route' => 'sessions',
-            'pages_count' => ceil($sessionsCount / SessionRepository::SESSIONS_PER_PAGE),
-            'route_params' => array()
-        ];
+        $pagination = $this->get('mentor.pagination')->paginate($page, 'sessions', $sessionsCount, SessionRepository::SESSIONS_PER_PAGE);
 
         $session = new Session();
         $form = $this->get('form.factory')->create(SessionType::class, $session);

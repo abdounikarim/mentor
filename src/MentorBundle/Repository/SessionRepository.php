@@ -9,7 +9,6 @@
 namespace MentorBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use MentorBundle\Entity\Session;
 use MentorBundle\Entity\User;
 
@@ -20,18 +19,13 @@ class SessionRepository extends EntityRepository
     const SESSIONS_PER_PAGE = 25;
     private $query;
 
-    public function findAll(){
-        return $this->findBy([], ['date' => 'DESC']);
-    }
-
     public function findAllByUser(User $user, $currentPage = 1)
     {
-        //return $this->findBy(['mentor' => $user], ['date' => 'DESC']);
         $this->query = $this->createQueryBuilder('s');
         $this->getByUser($user);
         $this->query->orderBy('s.date', 'DESC');
 
-        return $this->paginate($currentPage);
+        return $this->paginate($currentPage,  self::SESSIONS_PER_PAGE);
     }
 
     public function getBillDataByUserAndPeriod($month, $year, User $mentor)
@@ -81,23 +75,11 @@ class SessionRepository extends EntityRepository
 
     public function countByUser(User $user)
     {
-        $query = $this->createQueryBuilder('s')
-            ->where('s.mentor = :mentor')
-                ->setParameter('mentor', $user)
+        $this->query = $this->createQueryBuilder('s')
             ->select('COUNT(s)');
+        $this->getByUser($user);
 
-        return $query->getQuery()->getSingleScalarResult();
-    }
-
-    public function paginate($page = 1, $limit = self::SESSIONS_PER_PAGE)
-    {
-        $paginator = new Paginator($this->query);
-
-        $paginator->getQuery()
-            ->setFirstResult($limit * ($page - 1))
-            ->setMaxResults($limit);
-
-        return $paginator;
+        return $this->query->getQuery()->getSingleScalarResult();
     }
 
     private function getByPeriod($month, $year)

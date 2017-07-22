@@ -39,6 +39,10 @@ services:
         class: MentorBundle\Services\ExportPDF
         autowire: true
 
+    mentor.pagination:
+        class: MentorBundle\Services\Pagination
+        autowire: true
+
     # Repositories
     mentor.session_repository:
         class: MentorBundle\Repository\SessionRepository

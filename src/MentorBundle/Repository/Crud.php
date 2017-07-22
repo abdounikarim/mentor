@@ -9,6 +9,8 @@
 namespace MentorBundle\Repository;
 
 
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
 trait Crud
 {
     abstract public function create();
@@ -25,4 +27,16 @@ trait Crud
         $this->_em->persist($item);
         $this->_em->flush();
     }
+
+    protected function paginate($page = 1, $limit)
+    {
+        $paginator = new Paginator($this->query);
+
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($page - 1))
+            ->setMaxResults($limit);
+
+        return $paginator;
+    }
+
 }
