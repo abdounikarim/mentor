@@ -1,0 +1,14 @@
+{# app/Resources/views/form/fields.html.twig #}
+
+{% extends 'bootstrap_3_layout.html.twig' %}
+
+{%- block form_widget -%}
+{% if compound %}
+    {{- block('form_widget_compound') -}}
+{% else %}
+    {{- block('form_widget_simple') -}}
+{% endif %}
+{% if form.vars.help is defined and form.vars.help is not null %}
+    <span class="help" id="{{ form.vars.id }}_help"><i class="glyphicon glyphicon-info-sign"></i> {{ form.vars.help }}</span>
+{% endif %}
+{%- endblock form_widget -%}

@@ -1,3 +1,32 @@
+/* Help */
+.help {
+    display: none;
+}
+
+.help-message {
+    position: absolute;
+    padding: 0 8px;
+    height: 28px;
+    line-height: 28px;
+    background-color: rgba(0, 0, 0, 0.8);
+    left: 0px;
+    top: -25px;
+    font-size: 14px;
+    border-radius: 3px;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.help-message:after {
+    content: "";
+    position: absolute;
+    border-top: 8px solid rgba(0, 0, 0, 0.8);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    left: 10px;
+    top: 28px;
+}
+
 /* Pagination */
 .pagination-buttons > a {
     color: black;

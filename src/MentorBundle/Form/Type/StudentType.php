@@ -22,7 +22,9 @@ class StudentType extends AbstractType
     {
         $builder
             ->add('id', HiddenType::class)
-            ->add('fullname', TextType::class)
+            ->add('fullname', TextType::class, array(
+                'help' => 'Prénom Nom'
+            ))
             ->add('path', EntityType::class, array(
                 'class' => 'MentorBundle:Path',
                 'choice_label' => 'name',
