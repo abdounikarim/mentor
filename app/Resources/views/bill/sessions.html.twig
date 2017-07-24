@@ -69,9 +69,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/locales/bootstrap-datepicker.fr.min.js"></script>
     <script src="{{ asset('assets/js/sessions.js') }}"></script>
     <script>
-        var projects = [];
-        var selectedProject;
-
         $(document).ready(function(){
             $('#session_project').attr("disabled", "disabled");
 
@@ -139,6 +136,7 @@
                         $('#session_student_path').prop('selectedIndex', 0);
                         $('#session_student_path').removeAttr('disabled');
                     }
+                    $("#session_student_fullname_help").hide();
                     return false;
                 },
                 minLength: 2
@@ -164,13 +162,7 @@
             });
 
             $('#add-session').on('click', function () {
-                $('#session-type').html($('#session_type').val());
-                $('#session-date').html($('#session_date').val());
-                if ($('#session_noshow').is(':checked')) $('#session-noshow').html('No-show');
-                $('#session-student').html($('#session_student_fullname').val());
-                if ($('#session_student_id').val() === "") $('#new-student').html('Ce nouvel étudiant sera enregistré en même temps que la session.');
-                $('#session-project').html(selectedProject.name);
-                $('#session-price').html($('#session_price').val() + ' €');
+                showConfirmSessionModal();
             });
 
             $('#submit').click(function(){
